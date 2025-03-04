@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## 5.1.25
+
+Released: 2025-03-04
+
+### 🐛 Bug fixes
+
+ - First OSS version
+ - Fix removing data #1
+
 ## 5.1.24
 
 Released: 2023-02-19
