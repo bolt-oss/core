@@ -22,9 +22,6 @@ jobs:
             - name: Initialise
               run: |
                   wget https://get.symfony.com/cli/installer -O - | bash
-                  export PATH="$HOME/.symfony5/bin:$PATH"
-                  symfony composer --version
-                  symfony composer self-update -q	
             - name: Install dependencies
               run: |
                   export PATH="$HOME/.symfony5/bin:$PATH"
