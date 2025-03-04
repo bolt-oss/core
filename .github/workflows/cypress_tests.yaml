@@ -88,4 +88,6 @@ jobs:
                 if: failure()
                 with:
                     name: cypress-screenshots
-                    path: tests/cypress/screenshots
+                    path: |
+                        tests/cypress/screenshots
+                        var/log
