@@ -38,7 +38,8 @@ Released: 2023-01-27
 
 ### 🐛 Bug fixes
 
- - Fix PHPStan errors (on PHP 8.x) #3395
+- Fix PHPStan errors (on PHP 8.x) #3395
+
 
 
 ## 5.1.20
@@ -47,7 +48,7 @@ Released: 2023-01-20
 
 ### 🐛 Bug fixes
 
- - Do not display twig value for SetField #3390
+- Do not display twig value for SetField #3390
 
 
 ## 5.1.19
@@ -56,11 +57,57 @@ Released: 2022-12-08
 
 ### 🐛 Bug fixes
 
- - Pass other `_route_params` into a forwarded request #3342
- - Fix excerpt when content would be too short _after_ trimming #3367
- - Make `guesstimateAuthor` return type nullable #3358
- - Made the `isCurrent`-filter remove the current locale #3368
+- Pass other `_route_params` into a forwarded request #3342
+- Fix excerpt when content would be too short _after_ trimming #3367
+- Make `guesstimateAuthor` return type nullable #3358
+- Made the `isCurrent`-filter remove the current locale #3368
 
+
+## 5.2.0 Beta 3
+
+Released: 2022-08-24
+
+- Add extra fields option for `image` and `imagelist` fields [#3292](https://github.com/bolt/core/pull/3292))
+- Allow image/files modals to be populated from dynamic backend URLs [#3300](https://github.com/bolt/core/pull/3300))
+- Proper default for `$filter` [#3296](https://github.com/bolt/core/pull/3296))
+- Ensure uploaded SVG files have no embedded Javascript [#3294](https://github.com/bolt/core/pull/3294))
+- Prevent renaming or moving of files on edit [#3295](https://github.com/bolt/core/pull/3295))
+- Prevent injection when filtering records [#3293](https://github.com/bolt/core/pull/3293))
+- Fix icons in ContentTypes in Menu [#3287](https://github.com/bolt/core/pull/3287))
+- Fix some NPM bitrot [#3286](https://github.com/bolt/core/pull/3286))
+- Made the checkbox template recognise a false string as a value [#3279](https://github.com/bolt/core/pull/3279))
+- The services_bolt.yaml file now keeps the binds after regenerating it [#3277](https://github.com/bolt/core/pull/3277))
+
+
+## 5.2.0 Beta 2
+
+Released: 2022-07-05
+
+### 📦 Additions and new features
+
+- Filter `|image` looks in all possible fields [#3259](https://github.com/bolt/core/pull/3259))
+- Add non-supported SVG HTML element to HTML Sanitiser [#3257](https://github.com/bolt/core/pull/3257))
+- Add "edit" link icon to related content in select/multiselect lists (nestordedios, [#3195](https://github.com/bolt/core/pull/3195))
+- Make `type: hidden` Field usable (david-saisondor, [#3173](https://github.com/bolt/core/pull/3173))
+- Make top level menu icon in Backend customizable (david-saisondor, [#3167](https://github.com/bolt/core/pull/3167))
+- Make saving Ajaxy (Joossensei, [#3144](https://github.com/bolt/core/pull/3144))
+- Bootstrap upgrade from v4 to v5 (nestordedios, [#3129](https://github.com/bolt/core/pull/3129))
+- Add a flag `ajaxy_saving: true` to Config to turn Ajaxy saving on or off [#3253](https://github.com/bolt/core/pull/3253)
+- Add Fixtures for SEO field [#3254](https://github.com/bolt/core/pull/3254)
+- Added `prev` and `next` classes to Paginator [#3255](https://github.com/bolt/core/pull/3255)
+
+### 🐛 Bug fixes
+
+- Fix loading of modal text when removing Collection item [#3267](https://github.com/bolt/core/pull/3267))
+- Remove Collection item if the user acknowledges [#3265](https://github.com/bolt/core/pull/3265))
+- Replace manual copy to clipboard with tiny library [#3263](https://github.com/bolt/core/pull/3263))
+- Enable the hash functionality for tabs instead of pills [#3262](https://github.com/bolt/core/pull/3262))
+- Improve responsiveness for Collections on smaller screens [#3260](https://github.com/bolt/core/pull/3260))
+- Ensure `PublishedAt` gets set correctly when publishing a Record (bobdenotter, [#3211](https://github.com/bolt/core/pull/3211))
+- Fixed partial broken `UserLocaleSubscriber` (UtechtDustin, [#3204](https://github.com/bolt/core/pull/3204))
+- Separate methods for Pager from `pagerParams`. (vlad-ghita, [#3205](https://github.com/bolt/core/pull/3205))
+- Add `isTranslatable` condition in `get`-method [#3250](https://github.com/bolt/core/pull/3250)
+- Additional fix for `type: number` field, set default to `min: 0`. [#3252](https://github.com/bolt/core/pull/3252)
 
 ## 5.1.18
 

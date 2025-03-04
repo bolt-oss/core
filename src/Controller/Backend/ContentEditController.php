@@ -25,18 +25,21 @@ use Bolt\Repository\MediaRepository;
 use Bolt\Repository\RelationRepository;
 use Bolt\Repository\TaxonomyRepository;
 use Bolt\Security\ContentVoter;
+use Bolt\Utils\ContentHelper;
 use Bolt\Utils\TranslationsManager;
 use Bolt\Validator\ContentValidatorInterface;
 use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Tightenco\Collect\Support\Collection;
 
 /**
@@ -73,6 +76,12 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
     /** @var string */
     protected $defaultLocale;
 
+    /** @var TranslatorInterface */
+    private $translator;
+
+    /** @var ContentHelper */
+    private $contentHelper;
+
     public function __construct(
         TaxonomyRepository $taxonomyRepository,
         RelationRepository $relationRepository,
@@ -82,7 +91,9 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         UrlGeneratorInterface $urlGenerator,
         ContentFillListener $contentFillListener,
         EventDispatcherInterface $dispatcher,
-        string $defaultLocale
+        string $defaultLocale,
+        TranslatorInterface $translator,
+        ContentHelper $contentHelper
     ) {
         $this->taxonomyRepository = $taxonomyRepository;
         $this->relationRepository = $relationRepository;
@@ -93,6 +104,8 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         $this->contentFillListener = $contentFillListener;
         $this->dispatcher = $dispatcher;
         $this->defaultLocale = $defaultLocale;
+        $this->translator = $translator;
+        $this->contentHelper = $contentHelper;
     }
 
     /**
@@ -107,12 +120,16 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
 
         $content->setAuthor($user);
         $content->setContentType($contentType);
+
         // content now has a contentType -> permission check possible
         $this->denyAccessUnlessGranted(ContentVoter::CONTENT_CREATE, $content);
 
         $this->contentFillListener->fillContent($content);
 
         if ($this->request->getMethod() === 'POST') {
+            $content->setPublishedAt(null);
+            $content->setDepublishedAt(null);
+
             return $this->save($content, $contentValidator);
         }
 
@@ -124,7 +141,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
      */
     public function edit(Content $content): Response
     {
-        $this->denyAccessUnlessGranted(ContentVoter::CONTENT_VIEW, $content);
+        $this->denyAccessUnlessGranted(ContentVoter::CONTENT_EDIT, $content);
 
         $event = new ContentEvent($content);
         $this->dispatcher->dispatch($event, ContentEvent::ON_EDIT);
@@ -132,46 +149,6 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         return $this->renderEditor($content);
     }
 
-    /**
-     * @Route(
-     *     "/edit/{_locale}/{contentTypeSlug}/{slugOrId}",
-     *     name="bolt_edit_content_slug",
-     *     requirements={"contentTypeSlug"="%bolt.requirement.contenttypes%"},
-     *     methods={"GET"})
-     * @Route(
-     *     "/edit/{contentTypeSlug}/{slugOrId}",
-     *     name="bolt_edit_content_slug",
-     *     requirements={"contentTypeSlug"="%bolt.requirement.contenttypes%"},
-     *     methods={"GET"})
-     * @Route(
-     *     "/edit/{slugOrId}",
-     *     name="bolt_edit_content_slug",
-     *     requirements={"contentTypeSlug"="%bolt.requirement.contenttypes%"},
-     *     methods={"GET"})
-     * @Route(
-     *     "/edit/{_locale}/{slugOrId}",
-     *     name="bolt_edit_content_slug",
-     *     requirements={"contentTypeSlug"="%bolt.requirement.contenttypes%"},
-     *     methods={"GET"})
-     */
-    public function editFromSlug(?string $contentTypeSlug = null, $slugOrId): Response
-    {
-        $contentType = ContentType::factory($contentTypeSlug, $this->config->get('contenttypes'));
-        $record = $this->contentRepository->findOneBySlug($slugOrId, $contentType);
-
-        if (! $record && is_numeric($slugOrId)) {
-            $record = $this->contentRepository->findOneBy(['id' => (int) $slugOrId]);
-        }
-
-        if (! $record) {
-            throw new NotFoundHttpException('Content not found');
-        }
-
-        return $this->redirectToRoute('bolt_content_edit', [
-            'id' => $record->getId(),
-            'edit_locale' => $this->request->getLocale(),
-        ]);
-    }
 
     /**
      * @Route("/edit/{id}", name="bolt_content_edit_post", methods={"POST"}, requirements={"id": "\d+"})
@@ -199,16 +176,20 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         // check again on new/updated content, this is needed in case the save action is used to create a new item
         $this->denyAccessUnlessGranted(ContentVoter::CONTENT_EDIT, $content);
 
-        // check for status (and owner, but that hasn't been implemented in the forms yet) changes
+        // check for status changes
         if ($originalContent !== null) {
-            // deny if we detect any of these status fields being changed
-            if (
-                $originalStatus !== $content->getStatus() ||
-                Date::datesDiffer($originalPublishedAt, $content->getPublishedAt()) ||
-                Date::datesDiffer($originalDepublishedAt, $content->getDepublishedAt())
+            // deny if we detect the status field being changed
+            if ($originalStatus !== $content->getStatus() ) {
+                $this->denyAccessUnlessGranted(ContentVoter::CONTENT_CHANGE_STATUS, $content);
+            }
+
+            // deny if we detect the publication dates field being changed
+            if (($originalPublishedAt !== null && Date::datesDiffer($originalPublishedAt, $content->getPublishedAt())) ||
+                ($originalDepublishedAt !== null && Date::datesDiffer($originalDepublishedAt, $content->getDepublishedAt()))
             ) {
                 $this->denyAccessUnlessGranted(ContentVoter::CONTENT_CHANGE_STATUS, $content);
             }
+
             // deny if owner changes
             if ($originalAuthor !== $content->getAuthor()) {
                 $this->denyAccessUnlessGranted(ContentVoter::CONTENT_CHANGE_OWNERSHIP, $content);
@@ -233,7 +214,11 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         $this->em->persist($content);
         $this->em->flush();
 
-        $this->addFlash('success', 'content.updated_successfully');
+        // Set the list_format of the Record in the bolt_content table. This has to be done in a 2nd iteration because
+        // $content does not have id set untill the Entity Manager is flushed.
+        $content->setListFormat();
+        $this->em->persist($content);
+        $this->em->flush();
 
         $urlParams = [
             'id' => $content->getId(),
@@ -243,6 +228,31 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
 
         $event = new ContentEvent($content);
         $this->dispatcher->dispatch($event, ContentEvent::POST_SAVE);
+
+        $locale = $originalAuthor->getLocale();
+
+        // If we're "Saving Ajaxy"
+        if ($this->request->isXmlHttpRequest()) {
+            $modified = sprintf(
+                '(%s: %s)',
+                $this->translator->trans('field.modifiedAt', [], null, $locale),
+                $this->contentHelper->get($content, "{modifiedAt}")
+            );
+
+            return new JsonResponse([
+                'url' => $url,
+                'status' => 'success',
+                'type' => $this->translator->trans('success', [], null, $locale),
+                'message' => $this->translator->trans('content.updated_successfully', [], null, $locale),
+                'notification' => $this->translator->trans('flash_messages.notification', [], null, $locale),
+                'title' => $content->getExtras()['title'],
+                'modified' => $modified,
+            ], 200
+            );
+        }
+
+        // Otherwise, treat it as a normal POST-request cycle..
+        $this->addFlash('success', 'content.updated_successfully');
 
         return new RedirectResponse($url);
     }
@@ -397,8 +407,8 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         }
 
         if (isset($formData['relationship'])) {
-            foreach ($formData['relationship'] as $relation) {
-                $this->updateRelation($content, $relation);
+            foreach ($formData['relationship'] as $relationType => $relation) {
+                $this->updateRelation($content, $relationType, $relation);
             }
         }
 
@@ -551,67 +561,119 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         }
     }
 
-    public function updateTaxonomy(Content $content, string $key, $taxonomy, int $order): void
+    public function updateTaxonomy(Content $content, string $key, $postedTaxonomy, int $order): void
     {
-        $taxonomy = (new Collection(Json::findArray($taxonomy)))->filter();
+        $postedTaxonomy = (new Collection(Json::findArray($postedTaxonomy)))->filter();
+        $contentTaxoSlugs = [];
 
-        // Remove old ones
+        // Remove old ones, if they are not in the current ones
         foreach ($content->getTaxonomies($key) as $current) {
-            $content->removeTaxonomy($current);
+            // If it's not still present, remove it
+            if (! in_array($current->getSlug(), $postedTaxonomy->all())) {
+                $content->removeTaxonomy($current);
+            }
+
+            $contentTaxoSlugs[] = $current->getSlug();
         }
 
         // Then (re-) add selected ones
-        foreach ($taxonomy as $slug) {
-            $taxonomy = $this->taxonomyRepository->findOneBy([
+        foreach ($postedTaxonomy as $slug) {
+            // If we already have it, continue.
+            if (in_array($slug, $contentTaxoSlugs)) {
+                continue;
+            }
+
+            $repoTaxonomy = $this->taxonomyRepository->findOneBy([
                 'type' => $key,
                 'slug' => $slug,
             ]);
 
-            if ($taxonomy === null) {
-                $taxonomy = $this->taxonomyRepository->factory($key, (string) $slug);
+            if ($repoTaxonomy === null) {
+                $repoTaxonomy = $this->taxonomyRepository->factory($key, (string) $slug);
             }
 
-            $taxonomy->setSortorder($order);
+            $repoTaxonomy->setSortorder($order);
 
-            $content->addTaxonomy($taxonomy);
+            $content->addTaxonomy($repoTaxonomy);
         }
     }
 
-    private function updateRelation(Content $content, $newRelations): array
+    private function updateRelation(Content $content, string $relationType, $newRelations): void
     {
         $newRelations = (new Collection(Json::findArray($newRelations)))->filter();
-        $currentRelations = $this->relationRepository->findRelations($content, null, null, false);
-        $relationsResult = [];
+        $currentRelations = new Collection($this->relationRepository->findRelations($content, $relationType, null, false));
+        $currentRelationIds = $currentRelations
+            ->map(
+                static function (Relation $relation) use ($content) {
+                    return $relation->getFromContent() === $content
+                        ? $relation->getToContent()->getId()
+                        : $relation->getFromContent()->getId();
+                }
+            )
+            ->unique();
 
-        // Remove old ones
+        // Remove old, no longer used relations.
         foreach ($currentRelations as $currentRelation) {
+            if (
+                $newRelations->contains($currentRelation->getToContent()->getId())
+                || $newRelations->contains($currentRelation->getFromContent()->getId())
+            ) {
+                // This relation currently exists, and continues to exist.
+                continue;
+            }
+
             // unlink content from relation - needed for code using relations from the content
             // side later (e.g. validation)
-            if ($currentRelation->getToContent()) {
+            if (
+                $currentRelation->getToContent()
+                && $newRelations->doesntContain($currentRelation->getToContent()->getId())
+            ) {
                 $currentRelation->getToContent()->removeRelationsToThisContent($currentRelation);
             }
-            if ($currentRelation->getFromContent()) {
+            if (
+                $currentRelation->getFromContent()
+                && $newRelations->doesntContain($currentRelation->getFromContent()->getId())
+            ) {
                 $currentRelation->getFromContent()->removeRelationsFromThisContent($currentRelation);
             }
+            $currentRelations = $currentRelations->filter(
+                static function (Relation $r) use ($currentRelation) {
+                    return $r !== $currentRelation;
+                }
+            );
             $this->em->remove($currentRelation);
         }
 
         // Then (re-) add selected ones
-        foreach ($newRelations as $id) {
-            $contentTo = $this->contentRepository->findOneBy(['id' => $id]);
+        foreach ($newRelations as $position => $id) {
+            if ($currentRelationIds->contains($id)) {
+                // If this relation already exists, don't add it a second time. Do set a proper order on it, though.
+                $currentRelations
+                    ->first(
+                        static function (Relation $relation) use ($id) {
+                            $fromId = $relation->getFromContent() ? $relation->getFromContent()->getId() : null;
+                            $toId = $relation->getToContent() ? $relation->getToContent()->getId() : null;
+                            return \in_array(
+                                $id,
+                                [$fromId, $toId],
+                                true
+                            );
+                        }
+                    )
+                    ->setPosition($position);
+                continue;
+            }
 
+            $contentTo = $this->contentRepository->findOneBy(['id' => $id]);
             if ($contentTo === null) {
                 // Don't add relations to things that have gone missing
                 continue;
             }
 
             $relation = new Relation($content, $contentTo);
-
+            $relation->setPosition($position);
             $this->em->persist($relation);
-            $relationsResult[] = $id;
         }
-
-        return $relationsResult;
     }
 
     private function getEditLocale(Content $content): string

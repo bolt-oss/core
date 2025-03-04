@@ -143,22 +143,23 @@ class ImageController
         $raw = explode('×', preg_replace('/([0-9])(x)([0-9a-z])/i', '\1×\3', $paramString));
 
         $this->parameters = [
-            'w' => is_numeric($raw[0]) ? (int) $raw[0] : 400,
-            'h' => is_numeric($raw[1]) ? (int) $raw[1] : 300,
+            'w' => (isset($raw[0]) && is_numeric($raw[0])) ? (int) $raw[0] : 400,
+            'h' => (isset($raw[1]) && is_numeric($raw[1])) ? (int) $raw[1] : 300,
             'fit' => isset($raw[2]) ? $raw[2] : $this->config->get('general/thumbnails/default_cropping', 'default'),
             'location' => 'files',
+            'q' => (!empty($raw[2]) && 0 <= $raw[2] && $raw[2] <= 100) ? (int) $raw[2] : 80
         ];
 
-        if (isset($raw[3])) {
-            $this->parameters['fit'] = $this->parseFit($raw[2]);
-            $this->parameters['location'] = $raw[3];
-        } elseif (isset($raw[2])) {
-            $posible_fit = $this->parseFit($raw[2]);
+        if (isset($raw[4])) {
+            $this->parameters['fit'] = $this->parseFit($raw[3]);
+            $this->parameters['location'] = $raw[4];
+        } elseif (isset($raw[3])) {
+            $posible_fit = $this->parseFit($raw[3]);
 
             if ($this->testFit($posible_fit)) {
                 $this->parameters['fit'] = $posible_fit;
             } else {
-                $this->parameters['location'] = $raw[2];
+                $this->parameters['location'] = $raw[3];
             }
         }
     }
@@ -175,8 +176,9 @@ class ImageController
         $pathinfo = pathinfo($filename);
 
         $imageExtensions = ['gif', 'png', 'jpg', 'jpeg', 'svg', 'avif', 'webp'];
+        $ext = mb_strtolower($pathinfo['extension']);
 
-        return array_key_exists('extension', $pathinfo) && in_array($pathinfo['extension'], $imageExtensions, true);
+        return array_key_exists('extension', $pathinfo) && in_array($ext, $imageExtensions, true);
     }
 
     private function testFit(string $fit): bool

@@ -7,6 +7,20 @@
      - multiple: A boolean to set whether or not we allow multiple selections
  #}
 
+{% block label %}
+    {% if not hideLabel|default(false) %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% set fetchUrl = '' %}
+{% if field is defined
+    and field.definition.get('values') is not iterable
+    and field.definition.get('lazy')|default(false) %}
+    {% set options = [] %}
+    {% set fetchUrl = select_options_url(field) %}
+{% endif %}
+
 {% if options is not defined %}
     {% set options = select_options(field) %}
 {% endif %}
@@ -19,8 +33,9 @@
 	{% set autocomplete = field.definition.get('autocomplete')|default ? 'true' : 'false' %}
 {% endif %}
 
-{% if limit is not defined %}
-	{% set limit = field.definition.get('limit')|default(2000) %}
+{% set limit = config.get('general/maximum_listing_select', 2000) %}
+{% if field.definition.get('limit') is defined and field.definition.get('limit') is not empty %}
+    {% set limit = field.definition.get('limit') %}
 {% endif %}
 
 {% block field %}
@@ -36,5 +51,7 @@
         :autocomplete="{{ autocomplete }}"
         :readonly="{{ readonly|json_encode }}"
         :errormessage='{{ errormessage|json_encode }}'
+        :required='{{ required|json_encode }}'
+        :fetchurl='{{ fetchUrl|json_encode }}'
     ></editor-select>
 {% endblock %}

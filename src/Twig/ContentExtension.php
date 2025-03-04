@@ -268,7 +268,8 @@ class ContentExtension extends AbstractExtension
         }
 
         if (ContentHelper::isSuitable($content, 'excerpt_format')) {
-            $excerpt = $this->contentHelper->get($content, $content->getDefinition()->get('excerpt_format'), $this->requestStack->getCurrentRequest()->getLocale());
+            $locale = $this->requestStack->getCurrentRequest() ? $this->requestStack->getCurrentRequest()->getLocale() : null;
+            $excerpt = $this->contentHelper->get($content, $content->getDefinition()->get('excerpt_format'), $locale);
         } else {
             $excerpt = $this->getFieldBasedExcerpt($content, $length, $includeTitle);
         }
@@ -283,6 +284,15 @@ class ContentExtension extends AbstractExtension
 
         return $pre . Excerpt::getExcerpt($excerpt, $length, $focus) . $post;
     }
+
+    public function getListFormat($content)
+    {
+        $format = $content->getDefinition()->get('list_format', '[{contenttype} Nº {id} - {status}] {title}');
+        $listFormat = $this->contentHelper->get($content, $format);
+
+        return $listFormat;
+    }
+
 
     private function getFieldBasedExcerpt(Content $content, int $length, bool $includeTitle = false): string
     {
@@ -340,15 +350,28 @@ class ContentExtension extends AbstractExtension
 
     private function getAdjacentContent(Content $content, string $direction, string $byColumn = 'id', bool $sameContentType = true): ?Content
     {
-        if ($byColumn !== 'id') {
-            // @todo implement ordering by other columns/fields too
-            throw new \RuntimeException('Ordering content by column other than ID is not yet implemented');
+        switch ($byColumn) {
+            case "id":
+                $value = $content->getId();
+                break;
+            case "createdAt":
+                $value = $content->getCreatedAt();
+            case "publishedAt":
+                $value = $content->getPublishedAt();
+                break;
+            case "depublishedAt":
+                $value = $content->getDepublishedAt();
+                break;
+            case "modifiedAt":
+                $value = $content->getModifiedAt();
+                break;
+            default:
+                throw new \RuntimeException('Ordering content by this column is not yet implemented');
         }
 
-        $byColumn = filter_var($byColumn, FILTER_SANITIZE_STRING);
         $contentType = $sameContentType ? $content->getContentType() : null;
 
-        return $this->contentRepository->findAdjacentBy($byColumn, $direction, $content->getId(), $contentType);
+        return $this->contentRepository->findAdjacentBy($byColumn, $direction, $value, $contentType);
     }
 
     public function isCurrent(Environment $env, ?Content $content): bool
@@ -591,7 +614,7 @@ class ContentExtension extends AbstractExtension
 
         $icon = str_replace('fa-', '', $icon);
 
-        return "<i class='fas mr-2 fa-${icon}'></i>";
+        return "<i class='fas mr-2 fa-{$icon}'></i>";
     }
 
     public function hasPath(Content $record, string $path): bool

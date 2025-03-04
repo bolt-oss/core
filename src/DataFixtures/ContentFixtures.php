@@ -13,12 +13,14 @@ use Bolt\Entity\Field;
 use Bolt\Entity\Field\SelectField;
 use Bolt\Enum\Statuses;
 use Bolt\Repository\FieldRepository;
+use Bolt\Twig\ContentExtension;
 use Bolt\Utils\FakeContent;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Tightenco\Collect\Support\Collection;
 
 class ContentFixtures extends BaseFixture implements DependentFixtureInterface, FixtureGroupInterface
@@ -41,7 +43,13 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
     /** @var string */
     private $defaultLocale;
 
-    public function __construct(Config $config, FileLocations $fileLocations, string $defaultLocale)
+    /** @var TagAwareCacheInterface */
+    private $cache;
+
+    /** @var ContentExtension */
+    private $contentExtension;
+
+    public function __construct(Config $config, FileLocations $fileLocations, TagAwareCacheInterface $cache, string $defaultLocale, ContentExtension $contentExtension)
     {
         $this->config = $config;
         $this->faker = Factory::create();
@@ -53,6 +61,8 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
         $this->presetRecords = $this->getPresetRecords();
         $this->fileLocations = $fileLocations;
         $this->defaultLocale = $defaultLocale;
+        $this->cache = $cache;
+        $this->contentExtension = $contentExtension;
     }
 
     public function getDependencies()
@@ -76,6 +86,11 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
         $this->loadContent($manager);
 
         $manager->flush();
+
+        $this->cache->invalidateTags([
+            'backendmenu',
+            'frontendmenu'
+        ]);
 
         $this->setSelectFieldsMappedWithContent($manager);
     }
@@ -104,6 +119,8 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 $content->setCreatedAt($this->faker->dateTimeBetween('-1 year'));
                 $content->setModifiedAt($this->faker->dateTimeBetween('-1 year'));
                 $content->setPublishedAt($this->faker->dateTimeBetween('-1 year'));
+
+                $content->setContentExtension($this->contentExtension);
 
                 $preset = $this->getPreset($contentType['slug']);
 
@@ -397,6 +414,13 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 $data['long'] =$coordinates['longitude'];
                 $data = [json_encode($data)];
 
+
+                break;
+            case 'seo':
+                $data = ['keywords' => '', 'shortlink' => '', 'canonical' => '', 'robots' => '', 'og' => ''];
+                $data['title'] = $this->faker->sentence(4, true);
+                $data['description'] = $this->faker->sentence(120, true);
+                $data = [json_encode($data)];
 
                 break;
             default:

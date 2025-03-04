@@ -448,6 +448,16 @@
         <target>Email address</target>
       </segment>
     </unit>
+    <unit id="D2N7_cP" name="label.about">
+      <notes>
+        <note>src/Form/UserType.php:38</note>
+        <note>new</note>
+      </notes>
+      <segment>
+        <source>label.about</source>
+        <target>About</target>
+      </segment>
+    </unit>
     <unit id="OBmPOoB" name="user.updated_successfully">
       <notes>
         <note>src/Controller/Backend/UserController.php:33</note>
@@ -925,12 +935,6 @@
       <segment>
         <source>general.phrase.search</source>
         <target>Search</target>
-      </segment>
-    </unit>
-    <unit id="z0k8hRg" name="9fb3e6e">
-      <segment>
-        <source>9fb3e6e</source>
-        <target><![CDATA[This website is <a href='%url%' target='_blank' title='Sophisticated, lightweight & simple CMS'>Built with Bolt</a>.]]></target>
       </segment>
     </unit>
     <unit id="wNEwZy_" name="contenttypes.generic.overview">
@@ -2713,6 +2717,42 @@
       <segment>
         <source>You have to login in order to access this page.</source>
         <target>You have to login in order to access this page.</target>
+      </segment>
+    </unit>
+    <unit id="MjY7.cg" name="modal.title.file_field">
+      <segment>
+        <source>modal.title.file_field</source>
+        <target>Select a file</target>
+      </segment>
+    </unit>
+    <unit id="0yPnNMd" name="modal.title.image_field">
+      <segment>
+        <source>modal.title.image_field</source>
+        <target>Select an image</target>
+      </segment>
+    </unit>
+    <unit id="KIN.Ehy" name="modal.title.upload_from_url">
+      <segment>
+        <source>modal.title.upload_from_url</source>
+        <target>Upload from URL</target>
+      </segment>
+    </unit>
+    <unit id="ODb3pJA" name="modal.text.loading">
+      <segment>
+        <source>modal.text.loading</source>
+        <target>Loading...</target>
+      </segment>
+    </unit>
+    <unit id="VlfWDQr" name="modal.button_save">
+      <segment>
+        <source>modal.button_save</source>
+        <target>Save</target>
+      </segment>
+    </unit>
+    <unit id="ct_I4w3" name="modal.button_deny">
+      <segment>
+        <source>modal.button_deny</source>
+        <target>Close</target>
       </segment>
     </unit>
   </file>

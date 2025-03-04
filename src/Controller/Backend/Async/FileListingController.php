@@ -7,13 +7,13 @@ namespace Bolt\Controller\Backend\Async;
 use Bolt\Configuration\Config;
 use Bolt\Utils\FilesIndex;
 use Bolt\Utils\PathCanonicalize;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
-use Webmozart\PathUtil\Path;
 
 class FileListingController implements AsyncZoneInterface
 {
@@ -61,9 +61,11 @@ class FileListingController implements AsyncZoneInterface
 
         // Do not allow any path outside of the public directory.
         $path = PathCanonicalize::canonicalize($this->publicPath, $relativeLocation);
-        $basePath = PathCanonicalize::canonicalize($this->publicPath, $relativeTopLocation);
+        $baseFilePath = PathCanonicalize::canonicalize($this->publicPath, $relativeTopLocation);
+        $baseUrlPath = $this->request->getPathInfo();
+        $relativePath = Path::makeRelative($path, $this->publicPath);
 
-        $files = $this->filesIndex->get($path, $type, $basePath);
+        $files = $this->filesIndex->get($relativePath, $type, $baseUrlPath, $baseFilePath);
 
         return new JsonResponse($files);
     }

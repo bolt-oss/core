@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Bolt\Twig;
 
 use Bolt\Configuration\Config;
+use Bolt\Configuration\Content\ContentType;
 use Bolt\Entity\Content;
 use Bolt\Entity\Relation;
+use Bolt\Enum\Statuses;
 use Bolt\Repository\RelationRepository;
+use Bolt\Utils\ListFormatHelper;
 use Bolt\Utils\RelatedOptionsUtility;
 use Tightenco\Collect\Support\Collection;
 use Twig\Extension\AbstractExtension;
@@ -28,16 +31,21 @@ class RelatedExtension extends AbstractExtension
     /** @var RelatedOptionsUtility */
     private $optionsUtility;
 
+    /** @var ListFormatHelper */
+    private $listFormatHelper;
+
     public function __construct(
         RelationRepository $relationRepository,
         Config $config,
         Notifications $notifications,
-        RelatedOptionsUtility $optionsUtility)
+        RelatedOptionsUtility $optionsUtility,
+        ListFormatHelper $listFormatHelper)
     {
         $this->relationRepository = $relationRepository;
         $this->config = $config;
         $this->notifications = $notifications;
         $this->optionsUtility = $optionsUtility;
+        $this->listFormatHelper = $listFormatHelper;
     }
 
     /**
@@ -69,15 +77,25 @@ class RelatedExtension extends AbstractExtension
     }
 
     /**
+     * @param bool|string $bidirectional "both"|true, "to"|false, "from"
      * @return array name => Content[]
      */
-    public function getRelatedContentByType(Content $content, bool $bidirectional = true, ?int $limit = null, bool $publishedOnly = true): array
+    public function getRelatedContentByType(Content $content, $bidirectional = true, ?int $limit = null, bool $publishedOnly = true): array
     {
         if (! $this->checkforContent($content, 'related_by_type')) {
             return [];
         }
 
-        $relations = $this->relationRepository->findRelations($content, null, $limit, $publishedOnly);
+        // If the originating content is _not_ published, we'll need to set this. Context is probably a "secret preview link".
+        if ($content->getStatus() != Statuses::PUBLISHED) {
+            $publishedOnly = false;
+        }
+
+        if (is_bool($bidirectional)) {
+            $bidirectional = $bidirectional ? "both" : "to";
+        }
+
+        $relations = $this->relationRepository->findRelations($content, null, $limit, $publishedOnly, $bidirectional);
 
         return (new Collection($relations))
             ->reduce(function (array $result, Relation $relation) use ($content): array {
@@ -93,16 +111,22 @@ class RelatedExtension extends AbstractExtension
             }, []);
     }
 
-    /**
-     * @return Content[]
-     */
-    public function getRelatedContent($content, ?string $name = null, bool $bidirectional = true, ?int $limit = null, bool $publishedOnly = true): array
+    public function getRelatedContent($content, ?string $name = null, $bidirectional = true, ?int $limit = null, bool $publishedOnly = true): array
     {
         if (! $this->checkforContent($content, 'related')) {
             return [];
         }
 
-        $relations = $this->relationRepository->findRelations($content, $name, $limit, $publishedOnly);
+        // If the originating content is _not_ published, we'll need to set this. Context is probably a "secret preview link".
+        if ($content->getStatus() != Statuses::PUBLISHED) {
+            $publishedOnly = false;
+        }
+
+        if (is_bool($bidirectional)) {
+            $bidirectional = $bidirectional ? "both" : "to";
+        }
+
+        $relations = $this->relationRepository->findRelations($content, $name, $limit, $publishedOnly, $bidirectional);
 
         return (new Collection($relations))
             ->map(function (Relation $relation) use ($content) {
@@ -138,17 +162,24 @@ class RelatedExtension extends AbstractExtension
         return null;
     }
 
-    public function getRelatedOptions(string $contentTypeSlug, ?string $order = null, string $format = '', ?bool $required = false, ?bool $allowEmpty = false): Collection
+    public function getRelatedOptions(ContentType $fromContentType, string $toContentTypeSlug, ?string $order = null, string $format = '', ?bool $required = false, ?bool $allowEmpty = false, bool $linkToRecord = false): Collection
     {
         $maxAmount = $this->config->get('general/maximum_listing_select', 1000);
 
-        $contentType = $this->config->getContentType($contentTypeSlug);
+        $contentType = $this->config->getContentType($toContentTypeSlug);
 
         if (! $order) {
             $order = $contentType->get('order');
         }
 
-        $options = $this->optionsUtility->fetchRelatedOptions($contentTypeSlug, $order, $format, $required, $allowEmpty, $maxAmount);
+        // If we use `cache/list_format`, delegate it to that Helper
+        if ($this->config->get('general/caching/list_format')) {
+            $options = $this->listFormatHelper->getRelated($contentType, $maxAmount, $order);
+
+            return new Collection($options);
+        }
+
+        $options = $this->optionsUtility->fetchRelatedOptions($fromContentType, $toContentTypeSlug, $order, $format, $required, $allowEmpty, $maxAmount, $linkToRecord);
 
         return new Collection($options);
     }

@@ -16,16 +16,27 @@
             tag-placeholder="Add this as new tag"
             tag-position="bottom"
             track-by="key"
+            :loading="isLoading"
             @tag="addTag"
         >
             <template v-if="name === 'status'" slot="singleLabel" slot-scope="props">
-                <span class="status mr-2" :class="`is-${props.option.key}`"></span>
+                <span class="status me-2" :class="`is-${props.option.key}`"></span>
                 {{ props.option.value | raw }}
             </template>
             <template v-if="name === 'status'" slot="option" slot-scope="props">
-                <span class="status mr-2" :class="`is-${props.option.key}`"></span>
+                <span class="status me-2" :class="`is-${props.option.key}`"></span>
                 {{ props.option.value | raw }}
             </template>
+
+            <template v-if="props.option.link_to_record_url" slot="singleLabel" slot-scope="props">
+                <span v-html="props.option.value"></span>
+                <div class="multiselect__tag__edit">
+                    <a :href="props.option.link_to_record_url" target="_blank" rel="noopener noreferrer">
+                        <i class="far fa-edit me-0"></i>
+                    </a>
+                </div>
+            </template>
+
             <template v-if="name !== 'status'" slot="tag" slot-scope="props">
                 <span :class="{ empty: props.option.value == '' }" @drop="drop($event)" @dragover="allowDrop($event)">
                     <span
@@ -43,6 +54,13 @@
                         </div>
                         <!-- eslint-disable-next-line vue/no-v-html -->
                         <span v-html="props.option.value"></span>
+
+                        <div v-if="props.option.link_to_record_url" class="multiselect__tag__edit">
+                            <a :href="props.option.link_to_record_url" target="_blank" rel="noopener noreferrer">
+                                <i class="far fa-edit me-0"></i>
+                            </a>
+                        </div>
+
                         <i
                             tabindex="1"
                             class="multiselect__tag-icon"
@@ -77,6 +95,8 @@ export default {
         classname: String,
         autocomplete: Boolean,
         errormessage: String | Boolean, //string if errormessage is set, and false otherwise
+        required: String | Boolean,
+        fetchurl: String,
     },
     data: () => {
         return {
@@ -101,28 +121,63 @@ export default {
         },
     },
     mounted() {
-        const _values = !this.value ? [] : this.value.map ? this.value : [this.value];
-        const _options = this.options;
-
         /**
          * Filter method is necessary for required fields because the empty option is not
          * set. If the field is empty, "filterSelectedItems" will contain an undefined
          * element and "select" will not be filled with the first available option.
          */
-        let filterSelectedItems = _values
-            .map(value => {
-                const item = _options.filter(opt => opt.key === value);
-                if (item.length > 0) {
-                    return item[0];
-                }
-            })
-            .filter(item => undefined !== item);
+        const fixSelectedItems = function() {
+            const _values = !this.value ? [] : this.value.map ? this.value : [this.value];
 
-        if (filterSelectedItems.length === 0) {
-            filterSelectedItems = [_options[0]];
+            let filterSelectedItems = _values
+                .map(value => {
+                    const item = this.options.filter(opt => opt.key === value);
+                    if (item.length > 0) {
+                        return item[0];
+                    }
+                })
+                .filter(item => undefined !== item);
+
+            if (!!this._props.required && filterSelectedItems.length === 0) {
+                filterSelectedItems = [this.options[0]];
+            }
+
+            this.selected = filterSelectedItems;
+        };
+
+        /**
+         * If `fetchurl` is defined then pre-fill using a call. One problem is that on initialization
+         * for existing selects, multiple requests will be done at the same time. Subsequent queries
+         * can make use of the cache. Important part here is to have server-side caching.
+         */
+        if (this.fetchurl) {
+            window.selectCache = window.selectCache || {};
+            window.requestCache = window.requestCache || {};
+
+            if (window.selectCache[this.fetchurl]) {
+                this.options = window.selectCache[this.fetchurl];
+                fixSelectedItems.call(this);
+            } else if (window.requestCache[this.fetchurl]) {
+                window.requestCache[this.fetchurl].then(response => {
+                    this.options = response;
+                    fixSelectedItems.call(this);
+                });
+            } else {
+                this.isLoading = true;
+
+                window.requestCache[this.fetchurl] = $.ajax({ url: this.fetchurl, dataType: 'json', cache: true });
+                window.requestCache[this.fetchurl].then(
+                    response => {
+                        this.options = response;
+                        window.selectCache[this.fetchurl] = response;
+                        this.isLoading = false;
+                        fixSelectedItems.call(this);
+                    },
+                );
+            }
+        } else {
+            fixSelectedItems.call(this);
         }
-
-        this.selected = filterSelectedItems;
     },
     methods: {
         addTag(newTag) {

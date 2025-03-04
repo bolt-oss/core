@@ -84,7 +84,7 @@ class GeneralParser extends BaseParser
             'thumbnails' => [
                 'default_thumbnail' => [160, 120],
                 'default_image' => [1000, 750],
-                'quality' => 75,
+                'quality' => 80,
                 'cropping' => 'crop',
                 'notfound_image' => 'bolt_assets://img/default_notfound.png',
                 'error_image' => 'bolt_assets://img/default_error.png',
@@ -120,7 +120,19 @@ class GeneralParser extends BaseParser
                 'extensions_allowed' => ['png', 'jpeg', 'jpg', 'gif'],
                 'default_avatar' => '',
             ],
-            'user_show_sort&filter' => false
+            'user_show_sort&filter' => false,
+            'caching' => [
+                'related_options' => null,
+                'options_preparse' => null,
+                'canonical' => null,
+                'formatter' => null,
+                'selectoptions' => null,
+                'content_array' => null,
+                'frontend_menu' => null,
+                'backend_menu' => null,
+                'files_index' => null,
+                'list_format' => null,
+            ],
         ];
     }
 }

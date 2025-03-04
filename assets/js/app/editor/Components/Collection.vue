@@ -25,7 +25,7 @@
                 <div class="card-header d-flex align-items-center">
                     <!-- Initial title. This is replaced by dynamic title in JS below. -->
                     <i class="card-marker-caret fa fa-caret-right"></i>
-                    <span class="badge badge-secondary inline" :title="element.label">
+                    <span class="badge bg-secondary inline" :title="element.label">
                         <i :class="[element.icon, 'fas']"></i>
                     </span>
                     <div class="collection-item-title" :data-label="element.label">
@@ -50,7 +50,7 @@
                         :disabled="!allowMore"
                         class="btn btn-secondary dropdown-toggle"
                         type="button"
-                        data-toggle="dropdown"
+                        data-bs-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false"
                     >
@@ -162,7 +162,11 @@ export default {
             e.preventDefault();
             e.stopPropagation();
             let collectionContainer = window.$(this).closest(vueThis.selector.collectionContainer);
-            vueThis.getCollectionItemFromPressedButton(this).remove();
+            let button = this;
+
+            $('#modalButtonAccept').on('click', function() {
+                vueThis.getCollectionItemFromPressedButton(button).remove();
+            });
             vueThis.setAllButtonsStates(collectionContainer);
             vueThis.counter--;
         });

@@ -14,8 +14,10 @@ use Bolt\Repository\ContentRepository;
 use Bolt\Repository\FieldRepository;
 use Bolt\Storage\Query;
 use Bolt\Utils\ContentHelper;
+use Bolt\Utils\ListFormatHelper;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Tightenco\Collect\Support\Collection;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
@@ -39,19 +41,29 @@ class FieldExtension extends AbstractExtension
     /** @var Query */
     private $query;
 
+    /** @var UrlGeneratorInterface */
+    private $router;
+
+    /** @var ListFormatHelper */
+    private $listFormatHelper;
+
 
     public function __construct(
         Notifications $notifications,
         ContentRepository $contentRepository,
         Config $config,
         ContentHelper $contentHelper,
-        Query $query)
-    {
+        Query $query,
+        UrlGeneratorInterface $router,
+        ListFormatHelper $listFormatHelper
+        ) {
         $this->notifications = $notifications;
         $this->contentRepository = $contentRepository;
         $this->config = $config;
         $this->contentHelper = $contentHelper;
         $this->query = $query;
+        $this->router = $router;
+        $this->listFormatHelper = $listFormatHelper;
     }
 
     /**
@@ -73,6 +85,7 @@ class FieldExtension extends AbstractExtension
             new TwigFunction('field_factory', [$this, 'fieldFactory']),
             new TwigFunction('list_templates', [$this, 'getListTemplates']),
             new TwigFunction('select_options', [$this, 'selectOptions']),
+            new TwigFunction('select_options_url', [$this, 'selectOptionsUrl']),
         ];
     }
 
@@ -198,6 +211,16 @@ class FieldExtension extends AbstractExtension
         return new Collection($options);
     }
 
+    public function selectOptionsUrl(Field\SelectField $field): String
+    {
+        return $this->router->generate('bolt_async_select_options', [
+            'name'   => $field->getDefinition()->get('name', ''),
+            'values' => $field->getDefinition()->get('values'),
+            'limit'  => $field->getDefinition()->get('limit', ''),
+            'order'  => $field->getDefinition()->get('order', ''),
+        ]);
+    }
+
     public function selectOptions(Field $field): Collection
     {
         if (! $field instanceof SelectField) {
@@ -254,6 +277,12 @@ class FieldExtension extends AbstractExtension
     {
         [ $contentTypeSlug, $format ] = explode('/', $field->getDefinition()->get('values'));
 
+        if (empty($maxAmount = $field->getDefinition()->get('limit'))) {
+            $maxAmount = $this->config->get('general/maximum_listing_select', 200);
+        }
+
+        $order = $field->getDefinition()->get('order', '');
+
         $options = [];
 
         // We need to add this as a 'dummy' option for when the user is allowed
@@ -266,12 +295,6 @@ class FieldExtension extends AbstractExtension
                 'selected' => false,
             ];
         }
-
-        if (empty($maxAmount = $field->getDefinition()->get('limit'))) {
-            $maxAmount = $this->config->get('general/maximum_listing_select', 200);
-        }
-
-        $order = $field->getDefinition()->get('order', '');
 
         $params = [
             'limit' => $maxAmount,
@@ -288,19 +311,30 @@ class FieldExtension extends AbstractExtension
      */
     public function selectOptionsHelper(string $contentTypeSlug, array $params, Field $field, string $format): array
     {
+        // If we use `cache/list_format`, delegate it to that Helper
+        if ($this->config->get('general/caching/list_format')) {
+            $options = $this->listFormatHelper->getSelect($contentTypeSlug, $params);
+            return $options;
+        }
+
         /** @var Content[] $records */
         $records = iterator_to_array($this->query->getContent($contentTypeSlug, $params)->getCurrentPageResults());
 
         $options = [];
 
-        foreach ($records as $record) {
+        foreach ($records as $key => $record) {
             if ($field->getDefinition()->get('mode') === 'format') {
                 $formattedKey = $this->contentHelper->get($record, $field->getDefinition()->get('format'));
             }
-            $options[] = [
+            $options[$key] = [
                 'key' => $formattedKey ?? $record->getId(),
                 'value' => $this->contentHelper->get($record, $format),
             ];
+
+            // Generate URL for related record if the link_to_record option is defined in relations in the contenttypes.yaml
+            if ($field->getDefinition()->get('link_to_record')) {
+                $options[$key]["link_to_record_url"] = $this->router->generate('bolt_content_edit', ['id' => $record->getId()]);
+            }
         }
 
         return $options;

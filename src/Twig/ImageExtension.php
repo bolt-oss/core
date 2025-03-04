@@ -86,13 +86,15 @@ class ImageExtension extends AbstractExtension
         ];
     }
 
-    public function popup($image, int $width = 320, int $height = 240): string
+    public function popup($image, int $width = 320, int $height = 240, ?string $class = null): string
     {
         $link = $this->getFilename($image);
         $thumbnail = $this->thumbnail($image, $width, $height);
         $alt = $this->getAlt($image);
 
-        return sprintf('<a href="%s" class="bolt-popup"><img src="%s" alt="%s"></a>', $link, $thumbnail, $alt);
+        $class = $class ? ' class="{$class}"' : '';
+
+        return sprintf('<a href="%s" class="bolt-popup"><img src="%s" alt="%s"%s></a>', $link, $thumbnail, $alt, $class);
     }
 
     /**
@@ -121,11 +123,11 @@ class ImageExtension extends AbstractExtension
     /**
      * @param ImageField|array|string $image
      */
-    public function thumbnail($image, ?int $width = null, ?int $height = null, ?string $location = null, ?string $path = null, ?string $fit = null)
+    public function thumbnail($image, ?int $width = null, ?int $height = null, ?string $location = null, ?string $path = null, ?string $fit = null, ?int $quality = null)
     {
         $filename = $this->getFilename($image, true);
 
-        return $this->thumbnailHelper->path($filename, $width, $height, $location, $path, $fit);
+        return $this->thumbnailHelper->path($filename, $width, $height, $location, $path, $fit, $quality);
     }
 
     /**

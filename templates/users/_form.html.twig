@@ -42,7 +42,7 @@
     {% set suggested_pw_postfix %}{% apply spaceless %}
         <div>
             {{ 'password.suggested'|trans({'%password%': suggested_pw|e })|raw }}
-            <i style="cursor: pointer;" class="fas fa-clipboard-check ml-2" data-copy-to-clipboard="{{ suggested_pw }}"></i>
+            <i style="cursor: pointer;" class="fas fa-clipboard-check ms-2" data-copy-to-clipboard="{{ suggested_pw }}"></i>
         </div>
     {% endapply %}{% endset %}
 
@@ -179,6 +179,19 @@
     {% endif %}
     {% do userForm.avatar.setRendered() %}
 
+    {# ===== ABOUT ===== #}
+    {% include '@bolt/_partials/fields/textarea.html.twig' with {
+        'id' : userForm.about.vars.id,
+        'label' : 'label.about'|trans,
+        'name': userForm.vars.name ~ '[' ~ userForm.about.vars.name ~ ']',
+        'value': userForm.about.vars.value,
+        'class': 'form-control',
+        'required': userForm.about.vars.required
+    } %}
+    {% if form_errors(userForm.about) is not empty %}
+        <div class="field-error">{{ form_errors(userForm.about) }}</div>
+    {% endif %}
+    {% do userForm.about.setRendered() %}
 
 {# TODO: include form field with '@bolt/_partials/fields/select.html.twig' #}
     {# Comment out for a while, until we work on this again

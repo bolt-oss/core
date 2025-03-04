@@ -1,7 +1,7 @@
 ⚠️ PLEASE DON'T DISCLOSE SECURITY-RELATED ISSUES PUBLICLY, SEE BELOW.
 
 If you have found a security issue in Bolt, please send the details to
-security@boltcms.io and don't disclose it publicly until we can provide a fix 
+support@code-rhapsodie.fr and don't disclose it publicly until we can provide a fix 
 for it. If you wish, we'll credit you for finding verified issues, when we 
 release the patched version.
 
