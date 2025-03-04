@@ -1,7 +1,7 @@
 {
-    "name": "bolt/core",
+    "name": "bolt-oss/core",
     "type": "library",
-    "description": "🧿 Bolt 5 Core",
+    "description": "🧿 Bolt OSS 5 Core",
     "license": "MIT",
     "require": {
         "php": ">=7.2.9",
@@ -116,6 +116,9 @@
         "symfony/browser-kit": "^5.3",
         "symfony/css-selector": "^5.3",
         "symplify/easy-coding-standard": "^10.0"
+    },
+    "replace": {
+        "bolt/core": "*"
     },
     "config": {
         "preferred-install": {
