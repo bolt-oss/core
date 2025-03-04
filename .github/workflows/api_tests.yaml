@@ -21,19 +21,23 @@ jobs:
             - name: Initialise
               run: |
                   wget https://get.symfony.com/cli/installer -O - | bash
-                  
+                  export PATH="$HOME/.symfony5/bin:$PATH"
                   symfony composer self-update -q	
             - name: Install dependencies
               run: |
-                  COMPOSER_MEMORY_LIMIT=-1 COMPOSER_PROCESS_TIMEOUT=60 composer update --prefer-dist --no-progress
+                  export PATH="$HOME/.symfony5/bin:$PATH"
+                  COMPOSER_MEMORY_LIMIT=-1 COMPOSER_PROCESS_TIMEOUT=60 symfony composer update --prefer-dist --no-progress
             - name: Initialise the database
               run: |
+                  export PATH="$HOME/.symfony5/bin:$PATH"
                   chmod -R 777 config/ public/files/ public/theme/ public/thumbs/ var/
                   symfony console doctrine:database:create
                   symfony console doctrine:schema:create
                   symfony server:start --no-tls --port=8088 -d
             - name: create api user
-              run: symfony console bolt:add-user apiuser apiuser%1 api@example.org API --roles=ROLE_WEBSERVICE
+              run: |
+                  export PATH="$HOME/.symfony5/bin:$PATH"
+                  symfony console bolt:add-user apiuser apiuser%1 api@example.org API --roles=ROLE_WEBSERVICE
             - name: check API user gets content
               run: curl -fkI -u apiuser:apiuser%1 http://localhost:8088/api/contents
             - name: check API user gets fields
