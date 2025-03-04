@@ -56,6 +56,9 @@ jobs:
                     npm run build
                     sudo chmod -R 777 config/ public/files/ public/theme/ public/thumbs/ var/
                     echo "date.timezone=UTC" >> php.ini
+                    echo "session.gc_probability=0" >> php.ini
+                    echo "session.gc_divisor=100000" >> php.ini
+                    echo "session.gc_maxlifetime=1440000" >> php.ini
                     # prepare web server for e2e tests
                     symfony console doctrine:database:create
                     symfony console doctrine:schema:create
