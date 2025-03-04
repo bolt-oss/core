@@ -15,4 +15,8 @@ Change the dependencies:
 
 ## Upgrade project configuration
 
-In your `config` folder, search `vendor/bolt/core` and replace it with `vendor/bolt-oss/core`.
+In your `config` folder, search `vendor/bolt/` and replace it with `vendor/bolt-oss/`.
+
+## Upgrade vendors
+
+Run `composer update` to upgrade the dependencies.
