@@ -19,7 +19,7 @@ class CorePostInstallScript extends Script
             return;
         }
 
-        parent::init('Running composer "post-install-cmd" scripts, for `bolt/core` installation');
+        parent::init('Running composer "post-install-cmd" scripts, for `bolt-oss/core` installation');
 
         self::runConsole(['extensions:configure', '--with-config', '--ansi']);
         self::runConsole(['cache:clear', '--no-warmup']);

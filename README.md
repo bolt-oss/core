@@ -8,7 +8,7 @@
 
 <h4 align="center">The starting point of your new website</h4>
 
-*[Code Rhapsodie](https://code-rhapsodie.fr) offers you a maintained version of Bolt 5 until 2029.* To use it, replace `bolt/core` by `bolt-oss/core` in your project `composer.json`.
+*[Code Rhapsodie](https://code-rhapsodie.fr) offers you a maintained version of Bolt 5 until 2029.* To use it, [see the migration guide](./UPGRADE-TO-OSS.md).
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
