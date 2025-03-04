@@ -30,11 +30,9 @@ jobs:
             # See https://github.community/t/sudo-apt-install-fails-with-failed-to-fetch-http-security-ubuntu-com-404-not-found-ip/17075
             -   run: |
                     sudo apt update
-                    uname -a
-                    lsb_release -a
-            - name: Symfony cli installation
-              run: |
-                  wget https://get.symfony.com/cli/installer -O - | bash
+            -   name: Symfony cli installation
+                run: |
+                    wget https://get.symfony.com/cli/installer -O - | bash
             -   name: Install dependencies
                 run: |
                     export PATH="$HOME/.symfony5/bin:$PATH"
@@ -46,7 +44,7 @@ jobs:
                     touch ./var/log/e2e-reports/report/features/.gitkeep
                     # Install latest stable Chrome for e2e tests
                     sudo apt --fix-broken install
-#                    sudo apt-get install libxss1 libappindicator1 libindicator7
+                    #sudo apt-get install libxss1 libappindicator1 libindicator7
                     sudo apt-cache search libappindicator1
                     sudo apt-get install libxss1 libindicator7
                     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
