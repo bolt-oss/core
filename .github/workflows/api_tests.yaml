@@ -19,7 +19,7 @@ jobs:
                   extensions: json, mbstring, pdo, curl, pdo_sqlite
                   coverage: none
                   tools: composer
-            - name: Initialise
+            - name: Symfony cli installation
               run: |
                   wget https://get.symfony.com/cli/installer -O - | bash
             - name: Install dependencies
