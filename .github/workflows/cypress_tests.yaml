@@ -14,7 +14,7 @@ jobs:
             # https://github.com/cypress-io/github-action/issues/48
             fail-fast: false
             matrix:
-                containers: [1] #, 2, 3 number of parallel containers
+                containers: [1, 2, 3] # number of parallel containers
         steps:
             -   uses: actions/checkout@v4
             -   uses: shivammathur/setup-php@v2
