@@ -7,7 +7,7 @@ jobs:
     unittests:
         strategy:
             matrix:
-                php-version: [ '7.2', '8.4' ]
+                php-version: [ '7.2', '8.0' ]
             fail-fast: false
         name: PHPUnit 
         runs-on: ubuntu-latest
@@ -19,9 +19,7 @@ jobs:
                 php-version: ${{ matrix.php-version }}
                 extensions: json, mbstring, pdo, curl, pdo_sqlite
                 coverage: none
-            - name: Initialise
-              run: |
-                  composer self-update -q	
+                tools: composer
             - name: Install dependencies
               run: |
                   COMPOSER_MEMORY_LIMIT=-1 COMPOSER_PROCESS_TIMEOUT=60 composer update --prefer-dist --no-progress	--no-scripts
