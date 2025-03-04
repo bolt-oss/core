@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## 5.1.26
+
+Released: 2025-03-04
+
+### 🐛 Bug fixes
+
+ - Fix Composer hook
+
+### 🛠️ Miscellaneous
+
+ - Add OSS migration procedure
+
 ## 5.1.25
 
 Released: 2025-03-04
