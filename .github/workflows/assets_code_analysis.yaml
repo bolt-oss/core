@@ -1,7 +1,7 @@
 name: Assets Code Analysis
 
 on:
-    pull_request: null
+#    pull_request: null
     push:
         branches:
             - master
