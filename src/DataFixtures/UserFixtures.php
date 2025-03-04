@@ -100,7 +100,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
             [
                 'displayname' => 'Crazy Steve',
                 'username' => 'steve',
-                'password' => Str::generatePassword(12),
+                'password' => $this->append ? Str::generatePassword(12): '',
                 'email' => 'henkie@example.org',
                 'roles' => ['ROLE_EDITOR', 'ROLE_EXTRA_1', 'ROLE_EXTRA_2', 'ROLE_USER_FRONTEND_GROUP1'],
                 'status' => UserStatus::DISABLED,
@@ -111,7 +111,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
                 'password' => $this->append ? Str::generatePassword(12) : 'jane%1',
                 'email' => 'jane_admin@example.org',
                 'roles' => ['ROLE_CHIEF_EDITOR'],
-                'status' => UserStatus::DISABLED,
+                'status' => UserStatus::ENABLED,
             ],
             [
                 'displayname' => 'Tom Doe',
@@ -124,18 +124,18 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
             [
                 'displayname' => 'John Doe',
                 'username' => 'john_editor',
-                'password' => Str::generatePassword(12),
+                'password' => $this->append ? Str::generatePassword(12): 'john%1',
                 'email' => 'john_user@example.org',
                 'roles' => ['ROLE_EDITOR'],
-                'status' => UserStatus::DISABLED,
+                'status' => UserStatus::ENABLED,
             ],
             [
                 'displayname' => 'Eddie Enduser',
                 'username' => 'eddie',
-                'password' => Str::generatePassword(12),
+                'password' => $this->append ? Str::generatePassword(12): 'eddie%1',
                 'email' => 'eddie@example.org',
                 'roles' => ['ROLE_USER'],
-                'status' => UserStatus::DISABLED,
+                'status' => UserStatus::ENABLED,
             ],
         ];
     }

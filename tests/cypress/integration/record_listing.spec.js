@@ -18,7 +18,7 @@ describe('As an Admin I want to use record listing', () => {
         cy.get('div[class="card-header"]').should('contain', 'Contentlisting');
 
         cy.get('select[name="sortBy"]').select('author');
-        cy.get('button[class="btn btn-secondary mb-0 "]').should('contain', 'Filter').click();
+        cy.get('button[class="btn btn-secondary mb-0"]').should('contain', 'Filter').click();
 
         cy.url().should('contain', '/bolt/content/entries?sortBy=author&filter=');
         cy.get('.listing__row--list').eq(0).find('li').eq(1).should('contain', 'Admin');
@@ -32,7 +32,7 @@ describe('As an Admin I want to use record listing', () => {
         cy.get('div[class="card-header"]').should('contain', 'Contentlisting');
 
         cy.get('#content-filter').type('a');
-        cy.get('button[class="btn btn-secondary mb-0 "]').should('contain', 'Filter').click();
+        cy.get('button[class="btn btn-secondary mb-0"]').should('contain', 'Filter').click();
 
         cy.url().should('contain', '/bolt/content/entries?sortBy=&filter=a');
         cy.get('.listing--container').its('length').should('eq', 10);
@@ -41,7 +41,7 @@ describe('As an Admin I want to use record listing', () => {
 
         cy.get('#content-filter').clear();
         cy.get('#content-filter').type('Entries');
-        cy.get('button[class="btn btn-secondary mb-0 "]').should('contain', 'Filter').click();
+        cy.get('button[class="btn btn-secondary mb-0"]').should('contain', 'Filter').click();
         cy.url().should('contain', '/bolt/content/entries?sortBy=&filter=Entries');
         cy.get('.listing--container').find('div[class="listing__row is-normal"]').find('div[class="listing__row--item is-details"]').find('a').should('contain', 'Entries');
 
@@ -49,7 +49,7 @@ describe('As an Admin I want to use record listing', () => {
 
         cy.get('#content-filter').clear();
         cy.get('#content-filter').type(' ');
-        cy.get('button[class="btn btn-secondary mb-0 "]').should('contain', 'Filter').click();
+        cy.get('button[class="btn btn-secondary mb-0"]').should('contain', 'Filter').click();
         cy.url().should('contain', '/bolt/content/entries?sortBy=&filter=');
         cy.get('.listing--container').its('length').should('eq', 10);
     })

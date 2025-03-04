@@ -19,8 +19,8 @@ describe('As an Admin I want to fill in a Set and an Collection', () => {
         cy.get('textarea[name="sets[set][textarea]"]').clear();
         cy.get('textarea[name="sets[set][textarea]"]').type('Bar');
 
-        cy.get('button[class="btn btn-success mb-0 "]').eq(1).scrollIntoView();
-        cy.get('button[class="btn btn-success mb-0 "]').eq(1).click();
+        cy.get('button[class="btn btn-success mb-0"]').eq(1).scrollIntoView();
+        cy.get('button[class="btn btn-success mb-0"]').eq(1).click();
 
         cy.url().should('contain', '/bolt/edit/43?edit_locale=en#sets');
         cy.get('input[name="sets[set][title]"]').should('have.value', 'Foo');
@@ -58,8 +58,8 @@ describe('As an Admin I want to fill in a Set and an Collection', () => {
         cy.get('.collection-item:nth-child(4) .action-move-down-collection-item').click();
         cy.get('div[data-label="Set inside Collection"]').should('exist');
 
-        cy.get('button[class="btn btn-success mb-0 "]').eq(1).scrollIntoView();
-        cy.get('button[class="btn btn-success mb-0 "]').eq(1).click();
+        cy.get('button[class="btn btn-success mb-0"]').eq(1).scrollIntoView();
+        cy.get('button[class="btn btn-success mb-0"]').eq(1).click();
         cy.url().should('contain', '/bolt/edit/43?edit_locale=en#collections');
 
         cy.get(".collection-item:nth-child(4) input[type='text']").should('have.value', 'Hey, Bolt');
@@ -88,8 +88,8 @@ describe('As an Admin I want to fill in a Set and an Collection', () => {
         cy.wait(1000);
 
         cy.get('.collection-item').its('length').should('eq', 2);
-        cy.get('button[class="btn btn-success mb-0 "]').eq(1).scrollIntoView();
-        cy.get('button[class="btn btn-success mb-0 "]').eq(1).click({force: true});
+        cy.get('button[class="btn btn-success mb-0"]').eq(1).scrollIntoView();
+        cy.get('button[class="btn btn-success mb-0"]').eq(1).click({force: true});
 
         cy.get('.collection-item').its('length').should('eq', 2);
         cy.get('.collection-item-title').should('not.contain', 'Hey, Bolt');

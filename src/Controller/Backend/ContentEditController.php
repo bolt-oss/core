@@ -201,17 +201,13 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
 
         // check for status (and owner, but that hasn't been implemented in the forms yet) changes
         if ($originalContent !== null) {
-            // deny if we detect any of these status fields being changed
-            if (
-                $originalStatus !== $content->getStatus() ||
-                Date::datesDiffer($originalPublishedAt, $content->getPublishedAt()) ||
-                Date::datesDiffer($originalDepublishedAt, $content->getDepublishedAt())
-            ) {
-                $this->denyAccessUnlessGranted(ContentVoter::CONTENT_CHANGE_STATUS, $content);
+            if ($this->isGranted(ContentVoter::CONTENT_CHANGE_STATUS, $content) === false) {
+                $content->setStatus($originalStatus);
+                $content->setPublishedAt($originalPublishedAt);
+                $content->setDepublishedAt($originalDepublishedAt);
             }
-            // deny if owner changes
-            if ($originalAuthor !== $content->getAuthor()) {
-                $this->denyAccessUnlessGranted(ContentVoter::CONTENT_CHANGE_OWNERSHIP, $content);
+            if ($this->isGranted(ContentVoter::CONTENT_CHANGE_OWNERSHIP, $content) === false) {
+                $content->setAuthor($originalAuthor);
             }
         }
 
