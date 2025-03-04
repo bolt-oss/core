@@ -18,10 +18,12 @@ jobs:
                   php-version: ${{ matrix.php-version }}
                   extensions: json, mbstring, pdo, curl, pdo_sqlite
                   coverage: none
+                  tools: composer
             - name: Initialise
               run: |
                   wget https://get.symfony.com/cli/installer -O - | bash
                   export PATH="$HOME/.symfony5/bin:$PATH"
+                  symfony composer --version
                   symfony composer self-update -q	
             - name: Install dependencies
               run: |
