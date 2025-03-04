@@ -55,7 +55,8 @@ class Cast extends FunctionNode
         // doctrine/lexer v2
         if (is_array($parser->getLexer()->token)) {
             $this->second = $parser->getLexer()->token['value'];
-        } elseif (is_object($parser->getLexer()->token)){ // doctrine/lexer v3
+        /** @phpstan-ignore-next-line  */
+        } elseif (is_object($parser->getLexer()->token)) { // doctrine/lexer v3
             $this->second = $parser->getLexer()->token->value;
         } else {
             throw new \LogicException('Unable to acccess parser token');
