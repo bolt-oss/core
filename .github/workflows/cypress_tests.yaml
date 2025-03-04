@@ -65,12 +65,21 @@ jobs:
                     wget "http://127.0.0.1:8088/bolt/login"
 
             -   name: Cypress run
-                uses: cypress-io/github-action@v2
+                uses: cypress-io/github-action@v6
                 with:
                     command: "npm run cypress:ci"
+                    
+                    # Starts web server for E2E tests - replace with your own server invocation
+                    # https://docs.cypress.io/guides/continuous-integration/introduction#Boot-your-server
+#                    start: npm start
+                    wait-on: 'http://127.0.0.1:8088' # Waits for above
+                    # Records to Cypress Cloud
+                    # https://docs.cypress.io/guides/cloud/projects#Set-up-a-project-to-record
+                    record: true
+                    parallel: true
                 env:
                     CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-                    GITHUB_TOKEN: ${{ secrets.CYPRESS_GITHUB_TOKEN }}
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             -   uses: actions/upload-artifact@v4
                 if: failure()
                 with:
