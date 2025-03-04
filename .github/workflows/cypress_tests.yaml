@@ -14,7 +14,7 @@ jobs:
             # https://github.com/cypress-io/github-action/issues/48
             fail-fast: false
             matrix:
-                containers: [1, 2, 3] # number of parallel containers
+                containers: [1] #, 2, 3 number of parallel containers
         steps:
             -   uses: actions/checkout@v4
             -   uses: shivammathur/setup-php@v2
@@ -46,7 +46,9 @@ jobs:
                     touch ./var/log/e2e-reports/report/features/.gitkeep
                     # Install latest stable Chrome for e2e tests
                     sudo apt --fix-broken install
-                    sudo apt-get install libxss1 libappindicator1 libindicator7
+#                    sudo apt-get install libxss1 libappindicator1 libindicator7
+                    sudo apt-cache search libappindicator1
+                    sudo apt-get install libxss1 libindicator7
                     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
                     sudo apt install ./google-chrome*.deb
             -   name: Prepare environment
