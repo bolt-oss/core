@@ -13,10 +13,26 @@ Change the dependencies:
 * `bolt/themes` to `bolt-oss/themes`
 * `bolt/users` to `bolt-oss/users`
 
+Change the autoload path:
+
+```diff
+  {
+      "autoload-dev": {
+          "psr-4": {
+              "App\\Tests\\": "tests/",
+-             "Bolt\\ComposerScripts\\": "vendor/bolt/core/bin/composer-script/"
++             "Bolt\\ComposerScripts\\": "vendor/bolt-oss/core/bin/composer-script/"
+          }
+      }
+   }
+```
+
 ## Upgrade project configuration
 
 In your `config` folder, search `vendor/bolt/` and replace it with `vendor/bolt-oss/`.
 
-## Upgrade vendors
+## Update your vendor
 
-Run `composer update` to upgrade the dependencies.
+Before update, remove the folder `vendor/bolt` and run `composer update`.
+
+
