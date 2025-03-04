@@ -76,7 +76,7 @@ describe('As an Admin I want to be able to make use of the date & datetime field
         cy.visit('/bolt/profile-edit');
         cy.get('#multiselect-user_locale > div > div.multiselect__select').scrollIntoView();
         cy.get('#multiselect-user_locale > div > div.multiselect__select').click();
-        cy.contains('English (English, en)').click();
+        cy.contains('anglais (English, en)').click();
 
         cy.get('#edituser > button').scrollIntoView();
         cy.get('form[id="edituser"]').submit();
