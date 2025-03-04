@@ -22,7 +22,7 @@
 
 {% block stylesheets %}
 {{ parent() }}
-<link rel="stylesheet" href="{{ asset('/bundles/apiplatform/swagger-ui/swagger-ui.css') }}">
+<link rel="stylesheet" href="{{ '/bundles/apiplatform/swagger-ui/swagger-ui.css' }}">
 
 {# json_encode(65) is for JSON_UNESCAPED_SLASHES|JSON_HEX_TAG to avoid JS XSS #}
 <script id="swagger-data" type="application/json">{{ swagger_data|json_encode(65)|raw }}</script>
@@ -31,7 +31,7 @@
 
 {% block javascripts %}
 {{ parent() }}
-<script src="{{ asset('/bundles/apiplatform/swagger-ui/swagger-ui-bundle.js') }}"></script>
-<script src="{{ asset('/bundles/apiplatform/swagger-ui/swagger-ui-standalone-preset.js') }}"></script>
-<script src="{{ asset('/bundles/apiplatform/init-swagger-ui.js') }}"></script>
+<script src="{{ '/bundles/apiplatform/swagger-ui/swagger-ui-bundle.js' }}"></script>
+<script src="{{ '/bundles/apiplatform/swagger-ui/swagger-ui-standalone-preset.js' }}"></script>
+<script src="{{ '/bundles/apiplatform/init-swagger-ui.js' }}"></script>
 {% endblock %}
