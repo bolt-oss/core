@@ -30,19 +30,19 @@ class Cast extends FunctionNode
             // alternatively, test if true: $this->first->dispatch($sqlWalker)==='b2_.value',
             // b4_.value for /bolt/new/showcases
             if ($this->first->dispatch($sqlWalker) === 'b2_.value' ||
-                 $this->first->dispatch($sqlWalker) === 'b4_.value') {
+                $this->first->dispatch($sqlWalker) === 'b4_.value') {
                 return $this->first->dispatch($sqlWalker);
             }
         }
 
-        if (! mb_strpos($backend_driver, 'sqlite') && $this->second === 'TEXT') {
+        if (!mb_strpos($backend_driver, 'sqlite') && $this->second === 'TEXT') {
             $this->second = 'CHAR';
         }
 
         return sprintf('CAST(%s AS %s)',
             $this->first->dispatch($sqlWalker),
             $this->second
-            );
+        );
     }
 
     public function parse(Parser $parser): void
@@ -52,7 +52,14 @@ class Cast extends FunctionNode
         $this->first = $parser->ArithmeticPrimary();
         $parser->match(Lexer::T_AS);
         $parser->match(Lexer::T_IDENTIFIER);
-        $this->second = $parser->getLexer()->token['value'];
+        // doctrine/lexer v2
+        if (is_array($parser->getLexer()->token)) {
+            $this->second = $parser->getLexer()->token['value'];
+        } elseif (is_object($parser->getLexer()->token)){ // doctrine/lexer v3
+            $this->second = $parser->getLexer()->token->value;
+        } else {
+            throw new \LogicException('Unable to acccess parser token');
+        }
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }
 }
