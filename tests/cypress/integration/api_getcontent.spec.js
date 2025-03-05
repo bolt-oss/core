@@ -4,10 +4,13 @@ describe('As a user I want to fetch all contents of an API' , () => {
     it('Checks that GET response equals 200', () => {
         cy.login();
         cy.visit('/bolt/api');
+        cy.log('trying to get the swagger data');
+        cy.get('#swagger-data').invoke('text').then((val) => cy.log(JSON.stringify(val)));
         cy.wait(5000);
+        // cy.get('#swagger-data').invoke('text').contains('This is a page');
         cy.get('#operations-Content-getContentCollection').eq(0).click();
         cy.get('.response-col_status').should('contain', '200');
-    })
+    });
 
     it('Checks if the contents.json is filled with all content', () => {
         cy.login();
