@@ -13,6 +13,7 @@ describe('As a user I want to fetch all contents of an API' , () => {
     });
 
     it('Checks if the contents.json is filled with all content', () => {
+        // tag: ci
         cy.login();
         cy.request({
             url: '/api/contents.json',
@@ -33,6 +34,7 @@ describe('As a user I want to fetch all contents of an API' , () => {
     })
 
     it('Check if it returns JSON of a single record', () => {
+        // tag: ci
         cy.login();
         cy.request({
             url: '/api/contents/1.json',
@@ -53,6 +55,7 @@ describe('As a user I want to fetch all contents of an API' , () => {
     })
 
     it('Check if the JSON LD format is working', () => {
+        // tag: ci
         cy.login();
         cy.request({
             url: '/api/contents.jsonld',
@@ -73,6 +76,7 @@ describe('As a user I want to fetch all contents of an API' , () => {
     })
     //TODO fix this test once we can navigate inside object
     it('Check if the JSON LD format is working for single contenttypes like homepage', () => {
+        // tag: ci
         cy.login();
         cy.request({
             url: '/api/contents.jsonld?contentType=homepage',
@@ -93,6 +97,7 @@ describe('As a user I want to fetch all contents of an API' , () => {
     })
 
     it('Check if the JSON LD format is working for single records', () => {
+        // tag: ci
         cy.login();
         cy.request({
             url: '/api/contents/1.jsonld',
@@ -115,6 +120,7 @@ describe('As a user I want to fetch all contents of an API' , () => {
 
 describe('Test reading JSON Fields', () => {
     it('should read the values of the returned data in JSON', () => {
+        // tag: ci
         cy.request({
         url:`/api/contents/1/fields.json`,
         failOnStatusCode: false,
@@ -134,6 +140,7 @@ describe('Test reading JSON Fields', () => {
     })
 
     it('should read the values of the returned data in JSON ld', () => {
+        // tag: ci
         cy.request({
         url:`/api/contents/1/fields.jsonld`,
         failOnStatusCode: false,

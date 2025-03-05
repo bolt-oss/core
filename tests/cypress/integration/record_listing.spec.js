@@ -2,6 +2,7 @@
 
 describe('As an Admin I want to use record listing', () => {
     it('checks that an admin can navigate over the record listing', () => {
+        // tag: ci
         cy.login();
         cy.get('a[rel=next]').scrollIntoView();
         cy.get('a[rel=next]').click();
@@ -9,6 +10,7 @@ describe('As an Admin I want to use record listing', () => {
     })
 
     it('checks that an admin can sort content', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt');
 
@@ -26,6 +28,7 @@ describe('As an Admin I want to use record listing', () => {
     })
 
     it('checks that an admin can filter content', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/content/entries');
 
@@ -55,11 +58,13 @@ describe('As an Admin I want to use record listing', () => {
     })
 
     it('checks that a user can see the contenttype listing', () => {
+        // tag: ci
         cy.visit('/pages');
         cy.get('article').its('length').should('eq', 6);
     })
 
     it('checks that an admin can expand and compact the contenttype listing', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/content/pages');
         cy.get('button[title="Expanded"]').should('exist');
@@ -76,6 +81,7 @@ describe('As an Admin I want to use record listing', () => {
     })
 
     it('checks that an admin can see the last edited records in the sidebar', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/74');
         cy.get('button[name="save"]').eq(1).scrollIntoView();
@@ -88,6 +94,7 @@ describe('As an Admin I want to use record listing', () => {
     })
 
     it('checks that an admin can see the settings menu items', () => {
+        // tag: ci
         cy.login();
 
         cy.get('.admin__sidebar--menu').should('contain', 'Configuration');

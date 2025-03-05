@@ -2,6 +2,7 @@
 
 describe('Check permissions of a chief_editor', () => {
     it('checks all permissions of a chief editor', () => {
+        // tag: ci
         cy.login('jane_chief', 'jane%1');
 
         // TODO Wait for cache fix

@@ -2,6 +2,7 @@
 
 describe('As an Admin I want to be able to make use of the embed, infobox and image fields', () => {
     it('checks if an admin can use the embed field', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/44');
         cy.get('a[id="media-tab"]').click();
@@ -24,6 +25,7 @@ describe('As an Admin I want to be able to make use of the embed, infobox and im
     })
 
     it('checks if an admin can see the infobox field', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/38');
 
@@ -37,6 +39,7 @@ describe('As an Admin I want to be able to make use of the embed, infobox and im
     })
 
     it('checks if an admin can reset an image field', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/40');
         cy.get('a[id="media-tab"]').click();
@@ -85,6 +88,7 @@ describe('As an Admin I want to be able to make use of the date & datetime field
     })
 
     it('checks if an admin can use the date field', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/44');
         cy.get('a[id="other-tab"]').click();
@@ -100,6 +104,7 @@ describe('As an Admin I want to be able to make use of the date & datetime field
     })
 
     it('checks if an admin can use the datetime field with an AM time (with AM/PM selector)', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/44');
         cy.get('a[id="other-tab"]').click();

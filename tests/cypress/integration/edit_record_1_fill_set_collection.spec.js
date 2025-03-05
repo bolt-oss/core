@@ -2,6 +2,7 @@
 
 describe('As an Admin I want to fill in a Set and an Collection', () => {
     it('checks if an admin can fill in a set', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/43');
         cy.get('.editor__tabbar').should('contain', 'Sets');
@@ -29,6 +30,7 @@ describe('As an Admin I want to fill in a Set and an Collection', () => {
     })
 
     it('checks if an admin can fill in a collection', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/43');
         cy.get('.editor__tabbar').should('contain', 'Collections');

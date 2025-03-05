@@ -2,12 +2,14 @@
 
 describe('Check all editors privileges', () => {
     it('checks if an editor can access Configuration', () => {
+        // tag: ci
         cy.login('john_editor', 'john%1');
         cy.url().should('contain', '/bolt/');
         cy.get('ul[class="admin__sidebar--menu"]').find('li').find('a[href="/bolt/menu/configuration"]').should('not.exist');
     })
 
     it('checks if an editor can access maintenance pages besides About Bolt', () => {
+        // tag: ci
         cy.login('john_editor', 'john%1');
         cy.url().should('contain', '/bolt/');
         cy.get('ul[class="admin__sidebar--menu"]').find('li').eq(10).trigger('mouseover');
@@ -42,6 +44,7 @@ describe('Check all editors privileges', () => {
     })
 
     it('checks if an editor can access files', () => {
+        // tag: ci
         cy.visit('/bolt/login');
         cy.login('john_editor', 'john%1');
         cy.url().should('contain', '/bolt/');

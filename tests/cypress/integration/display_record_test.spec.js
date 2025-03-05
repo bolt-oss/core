@@ -2,12 +2,14 @@
 
 describe('As a user I want to see how the record is displayed', () => {
     it('checks that the record title is displayed as a user', () => {
+        // tag: ci
         cy.visit('/test/title-of-the-test');
         cy.get('.title').should('have.length', 1);
         cy.get('.title').should('contain', '74: Title of the test');
     })
 
     it('checks that fields are escaped as a user', () => {
+        // tag: ci
         cy.visit('/test/title-of-the-test');
         cy.get('.title').should('have.length', 1);
 
@@ -28,6 +30,7 @@ describe('As a user I want to see how the record is displayed', () => {
     })
 
     it('checks that file fields are displayed as a user', () => {
+        // tag: ci
         cy.visit('/test/title-of-the-test');
         cy.get('.title').should('have.length', 1);
         cy.get('#attachment #filename').should('contain', 'joey.jpg');

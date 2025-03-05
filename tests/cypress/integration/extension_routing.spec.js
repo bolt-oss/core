@@ -2,6 +2,7 @@
 
 describe('I want to see a page, added by an Extension', () => {
     it('checks that extension pages exist', () => {
+        // tag: ci
         cy.visit('/extensions/reference/Zebedeus');
         cy.get('p').should('contain', 'Hello, Zebedeus');
 

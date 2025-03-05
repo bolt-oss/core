@@ -2,6 +2,7 @@
 
 describe('As a user I want to see taxonomies in records and listings', () => {
     it('checks if there are taxonomies on a record', () => {
+        // tag: ci
         cy.visit('/entry/this-is-a-record-in-the-entries-contenttype');
         cy.get('.title').should('have.length', 1);
         cy.get('.taxonomy-categories').its('length').should('eq', 2);
@@ -9,6 +10,7 @@ describe('As a user I want to see taxonomies in records and listings', () => {
     });
 
     it('checks if there is a listing of a taxonomy', () => {
+        // tag: ci
         cy.login();
         cy.visit('/entry/this-is-a-record-in-the-entries-contenttype');
         cy.get('.title').should('have.length', 1);

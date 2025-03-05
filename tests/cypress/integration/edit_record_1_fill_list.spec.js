@@ -2,6 +2,7 @@
 
 describe('As an Admin I want to fill in an imagelist and filelist', () => {
     it('checks if an admin can fill in an imagelist', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/42');
         cy.get('a[id="media-tab"]').click();
@@ -57,6 +58,7 @@ describe('As an Admin I want to fill in an imagelist and filelist', () => {
     })
 
     it('checks if an admin can fill in an filelist', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/42');
         cy.get('a[id="files-tab"]').click();
