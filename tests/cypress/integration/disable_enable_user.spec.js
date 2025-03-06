@@ -2,6 +2,7 @@
 
 describe('Disable/enable users', () => {
     it('checks that an admin can disable/enable another user', () => {
+        // tag: ci
         cy.visit('/bolt/login');
         cy.get('input[name="login[username]"]').type('jane_chief');
         cy.get('input[name="login[password]"]').type('jane%1' + '{enter}');

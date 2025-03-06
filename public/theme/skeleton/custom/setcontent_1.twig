@@ -211,7 +211,7 @@
         <section id="fourteen">
             <h1>Fourteen</h1>
             {% setcontent pages = 'pages' orderby 'groups.sortorder' printquery %}
-        
+
             Results: <span id="results-fourteen">{{ pages|length > 0 ? 'yes' }}</span>
             <ul>
                 {% for page in pages %}
@@ -220,7 +220,7 @@
                     <span class="s{{ loop.index }}">{{ _self.isbigger(sortorder, last|default(0)) }}</span>
                 </li>
                 {% set last = sortorder %}
-                
+
                 {% endfor %}
             </ul>
         </section>
@@ -228,7 +228,7 @@
         <section id="fifteen">
             <h1>Fifteen</h1>
             {% setcontent pages = 'pages' orderby 'groups' printquery %}
-        
+
             Results: <span id="results-fifteen">{{ pages|length > 0 ? 'yes' }}</span>
             <ul>
                 {% for page in pages %}
@@ -237,7 +237,7 @@
                     <span class="s{{ loop.index }}">{{ _self.isbigger(tax, last|default(0)) }}</span>
                 </li>
                 {% set last = tax %}
-        
+
                 {% endfor %}
             </ul>
         </section>

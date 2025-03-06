@@ -2,6 +2,7 @@
 
 describe('As an admin I want to see the Kitchensink page', () => {
     it('checks that the Kitchensink page exists and works', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/kitchensink');
         cy.get('.admin__header--title').should('contain', 'Kitchensink');

@@ -16,55 +16,79 @@ jobs:
             matrix:
                 containers: [1, 2, 3] # number of parallel containers
         steps:
-            -   uses: actions/checkout@v2
+            -   uses: actions/checkout@v4
             -   uses: shivammathur/setup-php@v2
                 with:
                     # test the lowest version, to make sure checks pass on it
-                    php-version: 7.2
+                    php-version: 8.0
                     extensions: json, mbstring, pdo, curl, pdo_sqlite
                     coverage: none
-            -   uses: actions/setup-node@v1
+                    tools: composer
+            -   uses: actions/setup-node@v4
                 with:
-                    node-version: 12.5
+                    node-version: 12.22
             # See https://github.community/t/sudo-apt-install-fails-with-failed-to-fetch-http-security-ubuntu-com-404-not-found-ip/17075
-            -   run: sudo apt update
+            -   run: |
+                    sudo apt update
+            -   name: Symfony cli installation
+                run: |
+                    wget https://get.symfony.com/cli/installer -O - | bash
             -   name: Install dependencies
                 run: |
-                    sudo composer self-update -q
-                    sudo COMPOSER_MEMORY_LIMIT=-1 COMPOSER_PROCESS_TIMEOUT=60 composer update --prefer-dist --no-progress
-                    ./bin/console bolt:info	--ansi
+                    export PATH="$HOME/.symfony5/bin:$PATH"
+                    COMPOSER_MEMORY_LIMIT=-1 COMPOSER_PROCESS_TIMEOUT=60 symfony composer update --prefer-dist --no-progress
+                    symfony console bolt:info	--ansi
                     npm set progress=false
                     npm ci
                     mkdir -p ./var/log/e2e-reports/report/features/
                     touch ./var/log/e2e-reports/report/features/.gitkeep
                     # Install latest stable Chrome for e2e tests
                     sudo apt --fix-broken install
-                    sudo apt-get install libxss1 libappindicator1 libindicator7
+                    #sudo apt-get install libxss1 libappindicator1 libindicator7
+                    sudo apt-cache search libappindicator1
+                    sudo apt-get install libxss1 libindicator7
                     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
                     sudo apt install ./google-chrome*.deb
             -   name: Prepare environment
                 run: |
+                    export PATH="$HOME/.symfony5/bin:$PATH"
                     # build assets
                     npm run build
                     sudo chmod -R 777 config/ public/files/ public/theme/ public/thumbs/ var/
+                    echo "date.timezone=UTC" >> php.ini
+                    echo "session.gc_probability=0" >> php.ini
+                    echo "session.gc_divisor=100000" >> php.ini
+                    echo "session.gc_maxlifetime=1440000" >> php.ini
                     # prepare web server for e2e tests
-                    ./bin/console doctrine:database:create
-                    ./bin/console doctrine:schema:create
-                    ./bin/console doctrine:fixtures:load --group=without-images -n
-                    ./bin/console server:start 127.0.0.1:8088
+                    symfony console doctrine:database:create
+                    symfony console doctrine:schema:create
+                    symfony console doctrine:fixtures:load --group=without-images -n
+                    symfony server:start --no-tls --port=8088 -d
                     # test if web server works
                     sleep 3
                     wget "http://127.0.0.1:8088/bolt/login"
 
             -   name: Cypress run
-                uses: cypress-io/github-action@v2
+                uses: cypress-io/github-action@v6
                 with:
                     command: "npm run cypress:ci"
+                    
+                    # Starts web server for E2E tests - replace with your own server invocation
+                    # https://docs.cypress.io/guides/continuous-integration/introduction#Boot-your-server
+#                    start: npm start
+                    wait-on: 'http://127.0.0.1:8088' # Waits for above
+                    # Records to Cypress Cloud
+                    # https://docs.cypress.io/guides/cloud/projects#Set-up-a-project-to-record
+                    record: true
+                    parallel: true
                 env:
                     CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-                    GITHUB_TOKEN: ${{ secrets.CYPRESS_GITHUB_TOKEN }}
-            -   uses: actions/upload-artifact@v1
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    ELECTRON_ENABLE_LOGGING: 1
+            -   uses: actions/upload-artifact@v4
                 if: failure()
                 with:
-                    name: cypress-screenshots
-                    path: tests/cypress/screenshots
+                    name: cypress-screenshots-${{matrix.containers}}
+                    path: |
+                        tests/cypress/screenshots
+                        var/log

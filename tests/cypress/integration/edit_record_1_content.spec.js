@@ -2,18 +2,21 @@
 
 describe('As an Admin I want to see separators, placeholders and default values', () => {
     it('checks if an admin can see separated content (separator)', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/43');
         cy.get('#field--field-html').find('hr').its('length').should('eq', 1);
     })
 
     it('checks if an admin can see placeholder on new content', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/new/showcases');
         cy.get('input[name="fields[title]"]').should('have.attr', 'placeholder').and('match', /Placeholder for the title/);
     })
 
     it('checks if an admin can see default values', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt');
 
@@ -35,8 +38,8 @@ describe('As an Admin I want to see separators, placeholders and default values'
         cy.get('input[name="collections[collection_field][photo][3][filename]"]').should('have.value', 'joey.jpg');
         cy.get('input[name="collections[collection_field][photo][3][alt]"]').should('have.value', 'Photo of a foal');
 
-        cy.get('button[class="btn btn-success mb-0 "]').eq(1).scrollIntoView();
-        cy.get('button[class="btn btn-success mb-0 "]').eq(1).click();
+        cy.get('button[class="btn btn-success mb-0"]').eq(1).scrollIntoView();
+        cy.get('button[class="btn btn-success mb-0"]').eq(1).click();
 
         cy.get('input[name="fields[title]"]').should('have.value', 'Title of a test contenttype');
         cy.get('input[name="fields[image][filename]"]').should('have.value', 'foal.jpg');
@@ -56,6 +59,7 @@ describe('As an Admin I want to see separators, placeholders and default values'
 
 describe('As an Admin, I want to duplicate a page', () => {
     it('checks if an admin can duplicate a page', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/content/pages');
 
@@ -66,8 +70,8 @@ describe('As an Admin, I want to duplicate a page', () => {
         cy.get('input[name="fields[heading]"]').should('have.value', 'This is a page');
         cy.get('input[name="fields[slug]"]').should('have.value', 'this-is-a-page');
 
-        cy.get('button[class="btn btn-success mb-0 "]').eq(1).scrollIntoView();
-        cy.get('button[class="btn btn-success mb-0 "]').eq(1).click();
+        cy.get('button[class="btn btn-success mb-0"]').eq(1).scrollIntoView();
+        cy.get('button[class="btn btn-success mb-0"]').eq(1).click();
 
         cy.get('input[name="fields[heading]"]').should('have.value', 'This is a page');
         cy.get('input[name="fields[slug]"]').should('have.value', 'this-is-a-page-1');

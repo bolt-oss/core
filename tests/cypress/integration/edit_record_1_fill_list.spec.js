@@ -2,6 +2,7 @@
 
 describe('As an Admin I want to fill in an imagelist and filelist', () => {
     it('checks if an admin can fill in an imagelist', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/42');
         cy.get('a[id="media-tab"]').click();
@@ -50,13 +51,14 @@ describe('As an Admin I want to fill in an imagelist and filelist', () => {
         cy.get('div[class="btn-group mr-2"]').eq(11).find('button[disabled="disabled"]');
 
         cy.get('.form-fieldsgroup:nth-child(1) > .editor__image .btn:nth-child(3)').click();
-        cy.get('button[class="btn btn-success mb-0 "]').eq(1).click();
+        cy.get('button[class="btn btn-success mb-0"]').eq(1).click();
         //TODO: move checking for elements before saving changes(for some reason it doesn't work)
         cy.get('.editor__imagelist').find('div[class="form-fieldsgroup"]').its('length').should('eq', 4);
         cy.url().should('contain', '/bolt/edit/42?edit_locale=en#media');
     })
 
     it('checks if an admin can fill in an filelist', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/42');
         cy.get('a[id="files-tab"]').click();
@@ -100,7 +102,7 @@ describe('As an Admin I want to fill in an imagelist and filelist', () => {
 
         cy.get('.form-fieldsgroup:nth-child(1) > .editor__file .btn-hidden-danger').click();
         cy.get('button[class="btn btn-tertiary"]').eq(0).should('be.enabled');
-        cy.get('button[class="btn btn-success mb-0 "]').eq(1).click();
+        cy.get('button[class="btn btn-success mb-0"]').eq(1).click();
         //TODO: move checking for elements before saving changes(for some reason it doesn't work)
         cy.get('.editor-filelist').find('div[class="form-fieldsgroup"]').its('length').should('eq', 4);
         cy.url().should('contain', '/bolt/edit/42?edit_locale=en#files');

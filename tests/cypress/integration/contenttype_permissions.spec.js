@@ -2,6 +2,7 @@
 
 describe('Edit content as chief editor and editor without being the owner', () => {
     it('checks that the chief editor and editor can edit someone else\'s content', () => {
+        // tag: ci
         cy.login('jane_chief', 'jane%1');
 
         cy.visit('/bolt/content/pages');
@@ -40,6 +41,7 @@ describe('Edit content as chief editor and editor without being the owner', () =
 
 describe('Create content as editor and delete it as chief editor', () => {
     it('checks that editors can create content and chief editors can delete it', () => {
+        // tag: ci
         cy.login('john_editor', 'john%1');
 
         cy.visit('/bolt/content/pages');
@@ -70,6 +72,7 @@ describe('Create content as editor and delete it as chief editor', () => {
 
 describe('Change content post status as chief editor', () => {
     it('checks that the chief editor can change a post\'s status', () => {
+        // tag: ci
         cy.login('jane_chief', 'jane%1');
 
         cy.visit('/bolt/content/pages');

@@ -407,7 +407,7 @@
       </notes>
       <segment>
         <source>about.bolt_on_github</source>
-        <target>Bolt on Github</target>
+        <target>Bolt OSS on Github</target>
       </segment>
     </unit>
     <unit id="_9fS00R" name="about.used_libraries">
@@ -425,7 +425,7 @@
       </notes>
       <segment>
         <source>about.list_of_used_libraries</source>
-        <target>Below are the third party libraries that are used by Bolt.</target>
+        <target>Below are the third party libraries that are used by Bolt OSS.</target>
       </segment>
     </unit>
     <unit id="aYnbvsn" name="label.fullname">
