@@ -2,6 +2,7 @@
 
 describe('Edit user successfully, Edit users incorrectly', () => {
     it('checks that an admin can edit users', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/users');
 
@@ -27,6 +28,7 @@ describe('Edit user successfully, Edit users incorrectly', () => {
     })
 
     it('checks that a user can change their display name', () => {
+        // tag: ci
         cy.visit('/bolt/login');
         cy.get('input[name="login[username]"]').type('jane_chief');
         cy.get('input[name="login[password]"]').type('jane%1' + '{enter}');
@@ -45,6 +47,7 @@ describe('Edit user successfully, Edit users incorrectly', () => {
     })
 
     it("checks that an admin can't edit a user with incorrect details", () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/user-edit/2');
 
@@ -68,6 +71,7 @@ describe('Edit user successfully, Edit users incorrectly', () => {
     })
 
     it('checks that a user can\'t edit their profile with an incorrect display name', () => {
+        // tag: ci
         cy.visit('/bolt/login');
         cy.get('input[name="login[username]"]').type('jane_chief');
         cy.get('input[name="login[password]"]').type('jane%1' + '{enter}');

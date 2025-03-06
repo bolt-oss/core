@@ -2,6 +2,7 @@
 
 describe('Checks for localization', () => {
     it('checks that there\'s no localization link for contentype without locales', () => {
+        // tag: ci
         cy.login();
 
         cy.findAllByText('Entries').click();
@@ -13,6 +14,7 @@ describe('Checks for localization', () => {
     })
 
     it('checks that there\'s a localization link for contentype with locales', () => {
+        // tag: ci
         cy.login();
 
         cy.findAllByText('Pages').click();

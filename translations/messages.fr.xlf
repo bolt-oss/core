@@ -407,7 +407,7 @@
       </notes>
       <segment>
         <source>about.bolt_on_github</source>
-        <target>Bolt sur Github</target>
+        <target>Bolt OSS sur Github</target>
       </segment>
     </unit>
     <unit id="_9fS00R" name="about.used_libraries">
@@ -425,7 +425,7 @@
       </notes>
       <segment>
         <source>about.list_of_used_libraries</source>
-        <target>Vous trouverez ci-dessous les bibliothèques tierces utilisées par Bolt.</target>
+        <target>Vous trouverez ci-dessous les bibliothèques tierces utilisées par Bolt OSS.</target>
       </segment>
     </unit>
     <unit id="aYnbvsn" name="label.fullname">
@@ -694,7 +694,7 @@
     <unit id="wLaDaK5" name="caption.about_bolt">
       <segment>
         <source>caption.about_bolt</source>
-        <target>À propos de Bolt</target>
+        <target>À propos de Bolt OSS</target>
       </segment>
     </unit>
     <unit id="xN1kSQQ" name="caption.bolt_payoff">

@@ -509,7 +509,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
 
         // Only add this fixture if the file exists: It does in the "Git Clone", but not in the
         // "Composer create-project".
-        $file = dirname(dirname(__DIR__)) . '/public/theme/skeleton/custom/setcontent_1.twig';
+        $file = dirname(__DIR__,2) . '/public/theme/skeleton/custom/setcontent_1.twig';
         if (file_exists($file)) {
             $records['pages'][] = [
                 'heading' => 'Setcontent test page',
@@ -520,10 +520,10 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
 
         // Only add this fixture if the file exists: It does in the "Git Clone", but not in the
         // "Composer create-project".
-        $file = dirname(dirname(__DIR__)) . '/public/theme/skeleton/custom/setwherecheckbox_1.twig';
+        $file = dirname(__DIR__, 2) . '/public/theme/skeleton/custom/setwherecheckbox_1.twig';
         if (file_exists($file)) {
             $records['pages'][] = [
-                'heading' => 'SetContent Where Checkbox test page',
+                'heading' => 'SetContent test page Where Checkbox',
                 'slug' => 'Setwherecheckbox test page',
                 'template' => 'custom/setwherecheckbox_1.twig',
             ];

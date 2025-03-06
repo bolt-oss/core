@@ -25,7 +25,7 @@ describe('As an Admin I want to be able to make use of the date & datetime field
         cy.visit('/bolt/profile-edit');
         cy.get('#multiselect-user_locale > div > div.multiselect__select').scrollIntoView();
         cy.get('#multiselect-user_locale > div > div.multiselect__select').click();
-        cy.contains('English (English, en)').click();
+        cy.contains('anglais (English, en)').click();
 
         cy.get('#edituser > button').scrollIntoView();
         cy.get('form[id="edituser"]').submit();
@@ -34,6 +34,7 @@ describe('As an Admin I want to be able to make use of the date & datetime field
     })
 
     it('checks if an admin can use the date field', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/44');
         cy.get('a[id="other-tab"]').click();
@@ -49,6 +50,7 @@ describe('As an Admin I want to be able to make use of the date & datetime field
     })
 
     it('checks if an admin can use the datetime field with an AM time (with AM/PM selector)', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/44');
         cy.get('a[id="other-tab"]').click();

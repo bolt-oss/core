@@ -2,6 +2,7 @@
 
 describe('As an admin I should be able to run bulk actions', () => {
     it('checks if an admin can see all items', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/content/pages');
         cy.get("label[for='selectAll']").should('exist');
@@ -14,6 +15,7 @@ describe('As an admin I should be able to run bulk actions', () => {
     })
 
     it('checks if an admin can make multiple changes at once', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/content/tests');
         cy.get(".listing__filter input[type='checkbox']").click({ force: true });

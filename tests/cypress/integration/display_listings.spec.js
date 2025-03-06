@@ -2,6 +2,7 @@
 
 describe('As an admin I want to see Dashboard page', () => {
     it('checks that the dashboard listings work', () => {
+        // tag: ci
 
         cy.login();
         cy.get('.admin__header--title').should('contain', 'Dashboard');

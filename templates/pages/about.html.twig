@@ -14,7 +14,7 @@
 {% block main %}
 
     <h2>
-        Bolt {{ constant('Bolt\\Version::VERSION') }}
+        Bolt OSS {{ constant('Bolt\\Version::VERSION') }}
         {% if constant('Bolt\\Version::CODENAME') %}<small> - {{ constant('Bolt\\Version::CODENAME') }}</small>{% endif %}
     </h2>
 
@@ -30,22 +30,27 @@
             <i data-bs-toggle="popover" data-bs-trigger="hover" title="" data-bs-html="true" data-bs-content="{{ config.maxUploadDescription|raw }}" class="fa fa-info-circle"></i>
         </li>
         <li>Memory limit: <code>{{ memory_limit }}</code></li>
+        <li style="{{ timezone != 'UTC' ? 'color: red; font-weight: bold;':'' }}">Timezone: <code>{{ timezone }}</code> {{ timezone != 'UTC' ? ' Use the UTC timezone in PHP configuration.':'' }}</li>
     </ul>
     <hr>
 
+    <p>
+        Bolt OSS is a fork of the original Bolt CMS, which Bob den Otter created.
+        <strong>Following Bob den Otter's passing, the Bolt OSS community and the Code Rhapsody core team maintain Bolt OSS.</strong>
+    </p>
     <p>
         Bolt is a CMS that strives to be simple, fast, straightforward and enjoyable to use. Both for
         developers and content-editors. Bolt is Open Source, and as such it uses other Open Source
         components. If you are a developer you're very welcome to help in the further development of Bolt.
     </p>
-    <p>The ongoing Bolt development takes place under the care of:</p>
+    <p>The ongoing Bolt OSS development takes place under the care of:</p>
     <ul>
-        <li><a href="https://twokings.nl/" target="_blank">Two Kings</a> &ndash; Artisinal Web Development.</li>
+        <li><a href="https://code-rhapsodie.fr/" target="_blank">Code Rhapsodie</a> &ndash; Web expert development.</li>
     </ul>
 
     <p>Sponsors:</p>
     <ul>
-        <li><small>→ You and/or your company's name on this list? <a href="https://github.com/users/bobdenotter/sponsorship">Become a sponsor</a>.</small></li>
+        <li><small>→ You and/or your company's name on this list? <a href="mailto:support+bolt@code-rhapsodie.fr?subject=become%20sponsort">Become a sponsor</a>.</small></li>
     </ul>
 
 {# Previous collaborators / sponsors:
@@ -65,7 +70,7 @@
         <a href="https://docs.bolt.cm" class="btn btn-secondary" target="_blank">
             <i class="fa fa-book"></i> {{ 'about.bolt_documentation'|trans }}
         </a>
-        <a href="https://github.com/bolt" class="btn btn-secondary" target="_blank">
+        <a href="https://github.com/bolt-oss" class="btn btn-secondary" target="_blank">
             <i class="fa fa-external-link-square-alt"></i> {{ 'about.bolt_on_github'|trans }}
         </a>
     </p>

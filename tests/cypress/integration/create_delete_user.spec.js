@@ -2,6 +2,7 @@
 
 describe('Create/delete user', () => {
     it('checks that an admin can create and delete users', () => {
+        // tag: ci
         cy.login();
 
         //CACHE CLEAR

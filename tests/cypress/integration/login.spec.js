@@ -2,7 +2,8 @@
 
 describe('As an admin I attempt to log in to Dashboard with incorrect credentials', () => {
     it("checks that logging in with incorrect credentials doesn't work", () => {
-        
+        // tag: ci
+
         cy.visit('/bolt/login');
 
         cy.get('input[name="login[username]"]').type('admin');

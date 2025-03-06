@@ -2,6 +2,7 @@
 
 describe('As an Admin I want to change the title and the locale of a record', () => {
     it("checks if an admin can change a record's title", () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/30');
         cy.get('input[id="field-title"]').clear();
@@ -17,6 +18,7 @@ describe('As an Admin I want to change the title and the locale of a record', ()
     })
 
     it("checks if an admin can change a record's title in another language", () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/1');
         cy.get('input[id="field-title"]').clear();

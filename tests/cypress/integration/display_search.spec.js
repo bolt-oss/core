@@ -2,6 +2,8 @@
 
 describe('As a user I want to display search results', () => {
     it('checks that search results are displayed as a user', () => {
+        // tag: ci
+
         cy.visit('/');
         cy.get('input[type="search"]').scrollIntoView().type('consequatur');
         cy.get('button[type="submit"]').click();

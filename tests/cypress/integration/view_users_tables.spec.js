@@ -2,6 +2,7 @@
 
 describe('View users and permissions', () => {
     it('checks that an admin can view users and permission', () => {
+        // tag: ci
         cy.login();
 
         cy.get('a[href="/bolt/menu/configuration"]').click({force: true});
@@ -31,6 +32,7 @@ describe('View users and permissions', () => {
     })
 
     it('checks that an admin can view the currently running sessions', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/users');
 

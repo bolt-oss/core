@@ -6,19 +6,20 @@ describe('As a user I want to fetch all contents of an API' , () => {
         cy.visit('/bolt/api');
         cy.get('#operations-Content-getContentCollection').eq(0).click();
         cy.get('.response-col_status').should('contain', '200');
-    })
+    });
 
     it('Checks if the contents.json is filled with all content', () => {
+        // tag: ci
         cy.login();
-        cy.request({ 
-            url: '/api/contents.json', 
+        cy.request({
+            url: '/api/contents.json',
             failOnStatusCode: false,
             auth: {
                 username: 'admin',
                 password: 'admin%1',
             },
         }).then((response) => {
-            return new Promise(resolve => {        
+            return new Promise(resolve => {
                 expect(response).property('status').to.eq(200)
                 expect(response.body[0]).property('id').to.not.be.oneOf([null, ""])
                 const respBody = response.body[0];
@@ -29,16 +30,17 @@ describe('As a user I want to fetch all contents of an API' , () => {
     })
 
     it('Check if it returns JSON of a single record', () => {
+        // tag: ci
         cy.login();
-        cy.request({ 
-            url: '/api/contents/1.json', 
+        cy.request({
+            url: '/api/contents/1.json',
             failOnStatusCode: false,
             auth: {
                 username: 'admin',
                 password: 'admin%1',
             },
         }).then((response) => {
-            return new Promise(resolve => {        
+            return new Promise(resolve => {
                 expect(response).property('status').to.eq(200)
                 expect(response.body).property('id').to.not.be.oneOf([null, ""])
                 const respBody = response.body[0];
@@ -47,18 +49,19 @@ describe('As a user I want to fetch all contents of an API' , () => {
             });
         })
     })
-    
+
     it('Check if the JSON LD format is working', () => {
+        // tag: ci
         cy.login();
-        cy.request({ 
-            url: '/api/contents.jsonld', 
+        cy.request({
+            url: '/api/contents.jsonld',
             failOnStatusCode: false,
             auth: {
                 username: 'admin',
                 password: 'admin%1',
             },
         }).then((response) => {
-            return new Promise(resolve => {        
+            return new Promise(resolve => {
                 expect(response).property('status').to.eq(200)
                 expect(response.body).property('hydra:totalItems').to.not.be.oneOf([null, "", 0])
                 const respBody = response.body;
@@ -69,16 +72,17 @@ describe('As a user I want to fetch all contents of an API' , () => {
     })
     //TODO fix this test once we can navigate inside object
     it('Check if the JSON LD format is working for single contenttypes like homepage', () => {
+        // tag: ci
         cy.login();
-        cy.request({ 
-            url: '/api/contents.jsonld?contentType=homepage', 
+        cy.request({
+            url: '/api/contents.jsonld?contentType=homepage',
             failOnStatusCode: false,
             auth: {
                 username: 'admin',
                 password: 'admin%1',
             },
         }).then((response) => {
-            return new Promise(resolve => {        
+            return new Promise(resolve => {
                 expect(response).property('status').to.eq(200)
                 expect(response.body).property('hydra:totalItems').to.not.be.oneOf([null, "", 0])
                 const respBody = response.body;
@@ -89,16 +93,17 @@ describe('As a user I want to fetch all contents of an API' , () => {
     })
 
     it('Check if the JSON LD format is working for single records', () => {
+        // tag: ci
         cy.login();
-        cy.request({ 
-            url: '/api/contents/1.jsonld', 
+        cy.request({
+            url: '/api/contents/1.jsonld',
             failOnStatusCode: false,
             auth: {
                 username: 'admin',
                 password: 'admin%1',
             },
         }).then((response) => {
-            return new Promise(resolve => {        
+            return new Promise(resolve => {
                 expect(response).property('status').to.eq(200)
                 expect(response.body).property('id').to.not.be.oneOf([null, ""])
                 const respBody = response.body;
@@ -109,17 +114,18 @@ describe('As a user I want to fetch all contents of an API' , () => {
     })
 })
 
-describe('Test reading JSON Fields', () => {    
+describe('Test reading JSON Fields', () => {
     it('should read the values of the returned data in JSON', () => {
+        // tag: ci
         cy.request({
-        url:`/api/contents/1/fields.json`, 
+        url:`/api/contents/1/fields.json`,
         failOnStatusCode: false,
         auth: {
             username: 'admin',
             password: 'admin%1',
         },
         }).then((response) => {
-            return new Promise(resolve => {        
+            return new Promise(resolve => {
                 expect(response).property('status').to.eq(200)
                 expect(response.body[0]).property('name').to.not.be.oneOf([null, ""])
                 const respBody = response.body[0];
@@ -130,15 +136,16 @@ describe('Test reading JSON Fields', () => {
     })
 
     it('should read the values of the returned data in JSON ld', () => {
+        // tag: ci
         cy.request({
-        url:`/api/contents/1/fields.jsonld`, 
+        url:`/api/contents/1/fields.jsonld`,
         failOnStatusCode: false,
         auth: {
             username: 'admin',
             password: 'admin%1',
         },
         }).then((response) => {
-            return new Promise(resolve => {        
+            return new Promise(resolve => {
                 expect(response).property('status').to.eq(200)
                 expect(response.body).property('hydra:totalItems').to.not.be.oneOf([null, "", 0])
                 const respBody = response.body;

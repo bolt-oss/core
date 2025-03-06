@@ -2,6 +2,7 @@
 
 describe('As an Admin I want to view saved changes of a record or preview these', () => {
     it('checks if an admin can view saved changes on a record', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/2');
         cy.get('input[id="field-heading"]').clear();
@@ -25,11 +26,12 @@ describe('As an Admin I want to view saved changes of a record or preview these'
     })
 
     it('checks if an admin can preview an edited record', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/edit/30');
         cy.get('input[id="field-title"]').clear();
         cy.get('input[id="field-title"]').type('Check preview');
-        
+
         cy.get('#button-preview').invoke('removeAttr', 'formtarget').click({force: true});
         cy.url().should('contain', '/preview/30');
         cy.get('body').should('contain', 'Check preview');

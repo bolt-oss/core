@@ -12,6 +12,7 @@ describe('As an Admin I am able to use the files section', () => {
     })
 
     it('checks if an admin can delete files in the Files section', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/filemanager/files');
         cy.get('#files-list tr td b').eq(1).get('a').contains('_b-penguin.jpeg');
@@ -28,6 +29,7 @@ describe('As an Admin I am able to use the files section', () => {
     })
 
     it('checks if an admin can cancel deleting files in the Files section', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/filemanager/files');
         cy.get('#files-list tr td b').eq(0).get('a').contains('_a-sunrise.jpeg');
@@ -44,6 +46,7 @@ describe('As an Admin I am able to use the files section', () => {
     })
 
     it('checks if an admin can duplicate files in the Files section', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/filemanager/files');
         cy.get('#files-list tr td b').eq(0).get('a').contains('_a-sunrise.jpeg');
@@ -77,6 +80,7 @@ describe('As an Admin I am able to use the files section', () => {
     })
 
     it('checks if an admin can create and delete folders in the Files section', () => {
+        // tag: ci
         cy.login();
         cy.visit('/bolt/filemanager/files');
         cy.get('a').should('not.contain', 'a-new-folder/');
