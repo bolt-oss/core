@@ -1,10 +1,7 @@
 name: Accessibility (a11y) Tests
 
 on:
-    push:
-        branches:
-            - master
-#    pull_request:
+    pull_request:
 
 jobs:
     a11y_tests:

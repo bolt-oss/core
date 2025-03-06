@@ -1,10 +1,7 @@
 name: API tests
 
 on:
-    push:
-        branches:
-            - master
-#    pull_request:
+    pull_request:
 
 jobs:
     apicurltests:

@@ -1,6 +1,34 @@
 Changelog
 =========
 
+## 5.1.28
+
+Released: 2025-03-06
+
+### 🐛 Bug fixes
+
+ - Change bolt and bobdenotter dependencies to use only from Bolt OSS
+ - Update Cypress tests
+ - Fix GitHub Action worflows
+ - Fix Doctrine Lexer v3 compatibility [from Bolt pull request](https://github.com/bolt/core/pull/3527) @zanardigit
+ - Fix PHP 8.2 deprecation notices [from Bolt Issue](https://github.com/bolt/core/issues/3524)
+
+### 🛠️ Miscellaneous
+
+ - Update Migration guide
+
+## 5.1.27
+
+Released: 2025-03-04
+
+### 🐛 Bug fixes
+
+ - Fix YAML migration configuration
+
+### 🛠️ Miscellaneous
+
+ - Update Migration guide
+
 ## 5.1.26
 
 Released: 2025-03-04

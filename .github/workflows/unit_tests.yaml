@@ -1,10 +1,7 @@
 name: Unit Tests Checks
 
 on:
-    push:
-        branches:
-            - master
-#    pull_request:
+    pull_request:
 
 jobs:
     unittests:
